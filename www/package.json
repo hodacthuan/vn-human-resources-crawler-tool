@@ -1,0 +1,48 @@
+{
+  "name": "logrocket-smart-table",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.56",
+    "axios": "^0.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "js-cookie": "^2.2.1",
+    "multer": "^1.4.1",
+    "namor": "^1.1.2",
+    "nodemon": "^1.18.6",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.2.0",
+    "react-strap": "0.0.1",
+    "react-table": "^7.0.0-beta.14",
+    "react-toastify": "6.0.8",
+    "reactstrap": "^6.5.0",
+    "styled-components": "^4.3.2",
+    "xlsx": "^0.16.6"
+  },
+  "scripts": {
+    "start": "NODE_ENV2=production && react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

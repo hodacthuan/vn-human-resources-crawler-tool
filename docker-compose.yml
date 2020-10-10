@@ -1,0 +1,54 @@
+version: "3.7"
+
+services:
+  www:
+    restart: always
+    stdin_open: true
+    image: ${DOCKER_REGISTRY}/node:1.0
+    container_name: ${SERVICE_NAME}-www
+    command: bash -c "${WWW_COMMAND}"
+    volumes:
+      - ${DEPLOY_DIR}/www:/app
+
+    environment:
+      - SERVICE_NAME=${SERVICE_NAME}
+      - DEPLOY_ENV=${DEPLOY_ENV}
+    ports:
+      - 3000:3000
+    expose:
+      - 3000
+    logging:
+      options:
+        max-size: 2m
+    networks:
+      network:
+        aliases:
+          - www
+
+  server:
+    restart: always
+    stdin_open: true
+    image: ${DOCKER_REGISTRY}/node:1.0
+    container_name: ${SERVICE_NAME}-server
+    command: bash -c "${SERVER_COMMAND}"
+    volumes:
+      - ${DEPLOY_DIR}/server:/app
+
+    environment:
+      - SERVICE_NAME=${SERVICE_NAME}
+      - DEPLOY_ENV=${DEPLOY_ENV}
+    ports:
+      - 4000:4000
+    expose:
+      - 4000
+    logging:
+      options:
+        max-size: 2m
+    networks:
+      network:
+        aliases:
+          - server
+
+networks:
+  network:
+    name: ${SERVICE_NAME}-network
