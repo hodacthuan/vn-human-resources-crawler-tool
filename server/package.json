@@ -20,6 +20,7 @@
     "mv": "^2.1.1",
     "promise-foreach": "^1.0.23",
     "puppeteer": "^2.0.0",
+    "request": "^2.88.2",
     "validator": "^13.1.1",
     "xlsx": "^0.16.6"
   }

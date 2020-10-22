@@ -1,6 +1,7 @@
 #!/bin/bash
 CWD=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd ${CWD}
+./install-tools.sh
 
 export DEPLOY_DIR=$CWD
 export SERVICE_NAME=crawl
@@ -17,10 +18,10 @@ fi
 # SERVER: set SERVER_COMMAND to run in crawl server
 if [ "$DEPLOY_ENV" == "prod" ]; 
 then
-    export SERVER_COMMAND='npm install && node app.js'
+    export SERVER_COMMAND='npm install && NODE_ENV=production node app.js'
     export WWW_COMMAND='npm install && REACT_APP_NOT_SECRET_CODE=prod npm start'
 else 
-    export SERVER_COMMAND='npm install && nodemon app.js'
+    export SERVER_COMMAND='npm install && NODE_ENV=local nodemon app.js'
     export WWW_COMMAND='npm install && REACT_APP_NOT_SECRET_CODE=local npm start'
 fi
 

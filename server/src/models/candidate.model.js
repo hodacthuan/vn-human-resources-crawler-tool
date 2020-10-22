@@ -6,12 +6,18 @@ const CandidateSchema = new Schema({
         required: true,
         default: null
     },
-    createdDate: {   //ngày ghi vào database
+    candidateIdFromSource: {   //Id from the source (Mywork,...)
+        type: String,
+        unique: true,
+        required: true,
+        default: null
+    },
+    createdDate: {
         type: Date,
         required: true,
         default: Date.now
     },
-    updatedDate: {   //ngày sửa data base
+    updatedDate: {
         type: Date,
         default: null
     },
@@ -167,6 +173,15 @@ const CandidateSchema = new Schema({
         default: null
     },
     candidateAddress: {   // địa chỉ cụ thể
+        type: String,
+        default: null
+    },
+
+    error: {   //
+        type: Boolean,
+        default: false
+    },
+    errorMessage: {   // 
         type: String,
         default: null
     },

@@ -1,12 +1,11 @@
 'use strict';
 
+global.token = "";
 const commons = require('./src/commons/commons');
-const fs = require('fs'), path = require('path');
-const URL = require('url');
+const MyworkUtils = require('./src/utils/mywork.util')
+const request = require('request');
 const CONFIG = require('./config/config');
 const formidable = require('formidable');
-const XLSX = require('xlsx');
-const validator = require('validator');
 const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
@@ -26,39 +25,15 @@ app.use(function (req, res, next) {
 	next();
 });
 
-app.get('/list', async (req, res) => {
-	let candidateList = await commons.getMarketingCandidateList();
-	let allowanceFields = [
-		'candidateName',
-		'candidateAvatar',
-		'candidateBirth',
-		'candidateBirthYear',
-		'candidateGender',
-		'candidateLocation',
-		'candidateDistrict',
-		'candidateScore',
-		'candidateAddress',
-	];
-
-	let response = "";
-
-	candidateList.forEach((item) => {
-		allowanceFields.forEach((allowanceField) => { response += `${item[allowanceField]},`; });
-		response += `<a target='_blank' href = '${item.candidateUrl}'>${item.candidateUrl}</a>,`;
-		response += `<br/>`;
-	});
-	res.send(response);
-});
-
 app.get('/api/list', async (req, res) => {
-	let candidateList = await commons.getMarketingCandidateList();
+	let candidateList = await MyworkUtils.getMarketingCandidateList();
 
 	res.send(candidateList);
 });
 
 app.post('/api/update', async (req, res) => {
 	try {
-		await commons.updateMyworkImportCandidateInfo(req.body, 'MyworkSaveStatus');
+		await MyworkUtils.updateMyworkImportCandidateInfo(req.body, 'MyworkSaveStatus');
 
 		res.send('done');
 	} catch (e) {
@@ -66,19 +41,16 @@ app.post('/api/update', async (req, res) => {
 	}
 });
 
-function extend(target) {
+function fileExtend(target) {
 	var key, obj;
-
 	for (var i = 1, l = arguments.length; i < l; i++) {
 		if ((obj = arguments[i])) {
 			for (key in obj)
 				target[key] = obj[key];
 		}
 	}
-
 	return target;
 }
-
 app.post('/api/upload', async function (req, res, next) {
 	let form = new formidable.IncomingForm();
 	form.parse(req, async function (err, fields, files) {
@@ -87,13 +59,11 @@ app.post('/api/upload', async function (req, res, next) {
 			next(err);
 		} else {
 			try {
-				req.files = extend(fields, files);
-
-				let data = await commons.myWorkCandidateInfoExportFileHandling(req.files);
+				let data = await MyworkUtils.candidateInfoExportFileHandling(fileExtend(files));
 				console.log(`Got ${data.length} items`);
 				console.log(data);
 				res.send('done');
-				await commons.updateMyworkImportCandidateInfo(data, 'MyworkImportStatus');
+				await MyworkUtils.updateMyworkImportCandidateInfo(data, 'MyworkImportStatus');
 			} catch (error) {
 				res.sendStatus(400);
 			}
@@ -110,6 +80,19 @@ app.get('/api/status', async function (req, res, next) {
 	res.send(message);
 });
 
+app.post('/api/mywork/crawl', async function (req, res, next) {
+	try {
+		let urls = req.body.data;
+		if (!(urls) || !urls.length) {
+			res.send('Error: Urls not exist in body');
+		}
+
+		let response = await MyworkUtils.myworkCrawlDataByUrls(urls)
+		res.send(response);
+	} catch (error) {
+		res.send(error)
+	}
+});
 
 app.listen(port, () => {
 	console.log(`Server listening at port:${port}`);
