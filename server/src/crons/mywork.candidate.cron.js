@@ -26,7 +26,7 @@ MyworkCandidate.crawlEachItemAndsaveToDB = async (allItemsRaw) => {
 								await commons.sleep(Math.floor(Math.random() * 100) + 400);
 							}
 						}
-						commons.debug(itemDetail)
+						commons.debug(itemDetail);
 
 						resolve();
 					});
@@ -79,9 +79,9 @@ MyworkCandidate.crawlJob = async () => {
 			await commons.updateConfig('MyworkCandidate', { pageNum, categorieNum });
 		} else {
 			pageNum++;
-			await commons.updateConfig('MyworkCandidate', { pageNum, categorieNum });
-
 			await MyworkCandidate.crawlEachItemAndsaveToDB(allItemsRaw);
+
+			await commons.updateConfig('MyworkCandidate', { pageNum, categorieNum });
 		}
 	}
 };
