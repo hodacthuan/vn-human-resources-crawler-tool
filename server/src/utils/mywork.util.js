@@ -18,7 +18,7 @@ MyworkUtils.config = {
     downloadFile: 'file.xlsx'
 };
 
-MyworkUtils.mainPageScrape = async (page, url) => {
+MyworkUtils.mainPageScrape = async (url) => {
     let allJobEachPage = [];
     try {
 
@@ -52,7 +52,7 @@ MyworkUtils.mainPageScrape = async (page, url) => {
     return allJobEachPage;
 };
 
-MyworkUtils.extractedEachItemDetail = async (page, item) => {
+MyworkUtils.extractedEachItemDetail = async (item) => {
     try {
 
         await page.goto(item.candidateUrl);
@@ -633,7 +633,7 @@ MyworkUtils.extractedEachItemDetail = async (page, item) => {
     }
 };
 
-MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate = async (page, token, item) => {
+MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate = async (token, item) => {
 
     MyworkUtils.myworkSubmitToViewCandidateInfo(MyworkUtils.url2cvId(item.candidateUrl));
 
@@ -649,9 +649,14 @@ MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate = async (page, token, it
             session: false
         }];
 
+        await page.deleteCookie(...cookies);
+        await page.waitFor(100);
+
         await page.setCookie(...cookies);
+        await page.waitFor(300);
+
         await page.goto(item.candidateUrl);
-        await page.waitFor(Math.floor(Math.random() * 1000) + 2000);
+        await page.waitForSelector('#box-contact', { visible: true, timeout: 5000 });
 
         //code at fontend
         let data = await page.evaluate(() => {
@@ -675,6 +680,8 @@ MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate = async (page, token, it
                 _data.candidateEmail = null;
             }
 
+            console.log(_data);
+
             try {
                 let parentElement = document;
                 _data.candidatePhone = parentElement
@@ -691,6 +698,8 @@ MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate = async (page, token, it
 
                 _data.candidatePhone = null;
             }
+
+            console.log(_data);
 
             return _data;
         });
@@ -1337,9 +1346,6 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
     commons.debug(urls);
     let results = [];
 
-    const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-    const page = await browser.newPage();
-
     await urls.reduce(function (promise, url) {
         return promise.then(function () {
             return new Promise((resolve, reject) => {
@@ -1353,7 +1359,7 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
 
                     if (!candidate) {
                         commons.debug(`Crawl general info of candidate ${initCandidate.candidateIdFromSource}`);
-                        let crawlCandidate = await MyworkUtils.extractedEachItemDetail(page, initCandidate);
+                        let crawlCandidate = await MyworkUtils.extractedEachItemDetail(initCandidate);
 
                         if (crawlCandidate) {
                             candidate = await commons.updateCandidate(crawlCandidate);
@@ -1363,7 +1369,9 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
                     if (candidate && (!(candidate.candidatePhone && candidate.candidateEmail))) {
                         commons.debug(`Crawl contact info of candidate ${initCandidate.candidateIdFromSource}`);
                         global.token = await MyworkUtils.myworkGetToken(token);
-                        let crawlCandidate = await MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate(page, token, initCandidate);
+                        commons.debug(token);
+                        let crawlCandidate = await MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate(token, initCandidate);
+                        commons.debug(crawlCandidate);
 
                         if (crawlCandidate) {
                             candidate = await commons.updateCandidate(crawlCandidate);
@@ -1378,8 +1386,6 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
             });
         });
     }, Promise.resolve());
-
-    browser.close();
 
     return { data: results };
 };

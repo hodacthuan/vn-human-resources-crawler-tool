@@ -1,8 +1,8 @@
 'use strict';
 
-global.token = "";
+const puppeteer = require('puppeteer');
 const commons = require('./src/commons/commons');
-const MyworkUtils = require('./src/utils/mywork.util')
+const MyworkUtils = require('./src/utils/mywork.util');
 const request = require('request');
 const CONFIG = require('./config/config');
 const formidable = require('formidable');
@@ -13,6 +13,14 @@ const port = 4000;
 
 require('./src/commons/mongodb');
 require('./src/crons');
+
+global.token = "";
+
+(async () => {
+	global.browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+	global.page = await browser.newPage();
+})();
+
 
 app.use(bodyParser.json());
 
@@ -87,10 +95,10 @@ app.post('/api/mywork/crawl', async function (req, res, next) {
 			res.send('Error: Urls not exist in body');
 		}
 
-		let response = await MyworkUtils.myworkCrawlDataByUrls(urls)
+		let response = await MyworkUtils.myworkCrawlDataByUrls(urls);
 		res.send(response);
 	} catch (error) {
-		res.send(error)
+		res.send(error);
 	}
 });
 
