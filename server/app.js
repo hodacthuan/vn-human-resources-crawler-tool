@@ -17,8 +17,8 @@ require('./src/crons');
 global.token = "";
 
 (async () => {
-	global.browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-	global.page = await browser.newPage();
+	global.globalBrowser = await puppeteer.launch({ args: ['--no-sandbox'] });
+	global.globalPage = await globalBrowser.newPage();
 })();
 
 

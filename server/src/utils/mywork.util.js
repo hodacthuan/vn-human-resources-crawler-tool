@@ -18,7 +18,7 @@ MyworkUtils.config = {
     downloadFile: 'file.xlsx'
 };
 
-MyworkUtils.mainPageScrape = async (url) => {
+MyworkUtils.mainPageScrape = async (page, url) => {
     let allJobEachPage = [];
     try {
 
@@ -52,7 +52,7 @@ MyworkUtils.mainPageScrape = async (url) => {
     return allJobEachPage;
 };
 
-MyworkUtils.extractedEachItemDetail = async (item) => {
+MyworkUtils.extractedEachItemDetail = async (page, item) => {
     try {
 
         await page.goto(item.candidateUrl);
@@ -633,7 +633,7 @@ MyworkUtils.extractedEachItemDetail = async (item) => {
     }
 };
 
-MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate = async (token, item) => {
+MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate = async (page, token, item) => {
 
     MyworkUtils.myworkSubmitToViewCandidateInfo(MyworkUtils.url2cvId(item.candidateUrl));
 
@@ -1359,7 +1359,7 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
 
                     if (!candidate) {
                         commons.debug(`Crawl general info of candidate ${initCandidate.candidateIdFromSource}`);
-                        let crawlCandidate = await MyworkUtils.extractedEachItemDetail(initCandidate);
+                        let crawlCandidate = await MyworkUtils.extractedEachItemDetail(globalPage, initCandidate);
 
                         if (crawlCandidate) {
                             candidate = await commons.updateCandidate(crawlCandidate);
@@ -1370,7 +1370,7 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
                         commons.debug(`Crawl contact info of candidate ${initCandidate.candidateIdFromSource}`);
                         global.token = await MyworkUtils.myworkGetToken(token);
                         commons.debug(token);
-                        let crawlCandidate = await MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate(token, initCandidate);
+                        let crawlCandidate = await MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate(globalPage, token, initCandidate);
                         commons.debug(crawlCandidate);
 
                         if (crawlCandidate) {
