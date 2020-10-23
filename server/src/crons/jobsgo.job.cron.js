@@ -1,7 +1,7 @@
 const source = 'JobsGo';
-const cronJobName = `${source}_Job`
-const rootUrl = 'https://jobsgo.vn'
-const refUrl = 'https://jobsgo.vn/viec-lam.html'
+const cronJobName = `${source}_Job`;
+const rootUrl = 'https://jobsgo.vn';
+const refUrl = 'https://jobsgo.vn/viec-lam.html';
 const commons = require('../commons/commons');
 const JobModel = require('../models/job.model');
 const CompanyModel = require('../models/company.model');
@@ -45,7 +45,7 @@ const mainPageScrape = async (url) => {
 			return data;
 		});
 
-		browser.close();
+		await browser.close();
 	} catch (error) {
 		console.log(`ERROR :: ${source} candidate mainPageScrape fail`, error);
 
@@ -55,7 +55,7 @@ const mainPageScrape = async (url) => {
 
 const extractedEachItemDetail = async (item) => {
 	try {
-		console.log(`Extracting item ${item.jobUrl}`)
+		console.log(`Extracting item ${item.jobUrl}`);
 		const browser = await commons.browserConfig();
 		const page = await browser.newPage();
 		await page.goto(item.jobUrl);
@@ -101,8 +101,8 @@ const extractedEachItemDetail = async (item) => {
 
 				for (k = 0; k < containers.length; k++) {
 
-					let parentElementTitle = containers[k].getElementsByClassName('text-semibold')[0].innerText.trim()
-					let parentElement = containers[k].getElementsByClassName('clearfix')[0]
+					let parentElementTitle = containers[k].getElementsByClassName('text-semibold')[0].innerText.trim();
+					let parentElement = containers[k].getElementsByClassName('clearfix')[0];
 
 					//Mô tả công việc
 					if (parentElementTitle == 'Mô tả công việc') {
@@ -166,7 +166,7 @@ const extractedEachItemDetail = async (item) => {
 
 			// jobProfession, jobYearsofExperience, jobAddress, jobAcademicDegree
 			try {
-				_data.jobType = []
+				_data.jobType = [];
 				_data.jobProfession = [];
 				_data.jobYearsofExperience = null;
 				_data.jobAddress = [];
@@ -185,42 +185,42 @@ const extractedEachItemDetail = async (item) => {
 
 							try {
 								if (containerItem[i].innerText.trim().includes('Địa điểm làm việc')) {
-									let dataList = containerItem[i + 2].getElementsByClassName('data')[0].getElementsByTagName('p')
+									let dataList = containerItem[i + 2].getElementsByClassName('data')[0].getElementsByTagName('p');
 									for (j = 0; j < dataList.length; j++) {
-										_data.jobAddress.push(dataList[j].innerText.trim())
+										_data.jobAddress.push(dataList[j].innerText.trim());
 									}
 								}
 							} catch { }
 
 							try {
 								if (containerItem[i].innerText.trim().includes('Ngành nghề')) {
-									let dataList = containerItem[i + 2].getElementsByTagName('a')
+									let dataList = containerItem[i + 2].getElementsByTagName('a');
 									for (j = 0; j < dataList.length; j++) {
-										_data.jobProfession.push(dataList[j].innerText.trim())
+										_data.jobProfession.push(dataList[j].innerText.trim());
 									}
 								}
 							} catch { }
 
 							try {
 								if (containerItem[i].innerText.trim().includes('Tính chất công việc')) {
-									let dataList = containerItem[i + 2].getElementsByTagName('a')
+									let dataList = containerItem[i + 2].getElementsByTagName('a');
 									for (j = 0; j < dataList.length; j++) {
-										_data.jobType.push(dataList[j].innerText.trim())
+										_data.jobType.push(dataList[j].innerText.trim());
 									}
 								}
 							} catch { }
 
 							try {
 								if (containerItem[i].innerText.trim().includes('Yêu cầu kinh nghiệm')) {
-									let dataList = containerItem[i + 2]
-									_data.jobYearsofExperience = (dataList.innerText.trim())
+									let dataList = containerItem[i + 2];
+									_data.jobYearsofExperience = (dataList.innerText.trim());
 								}
 							} catch { }
 
 							try {
 								if (containerItem[i].innerText.trim().includes('Yêu cầu về bằng cấp')) {
-									let dataList = containerItem[i + 2]
-									_data.jobAcademicDegree.push(dataList.innerText.trim())
+									let dataList = containerItem[i + 2];
+									_data.jobAcademicDegree.push(dataList.innerText.trim());
 								}
 							} catch { }
 
@@ -230,7 +230,7 @@ const extractedEachItemDetail = async (item) => {
 				}
 			} catch (err) {
 				_data.error = true;
-				_data.jobType = []
+				_data.jobType = [];
 				_data.jobProfession = [];
 				_data.jobYearsofExperience = null;
 				_data.jobAddress = [];
@@ -240,10 +240,10 @@ const extractedEachItemDetail = async (item) => {
 			// company info
 			try {
 
-				_data.companyAddress = null
-				_data.companySize = null
-				_data.companyWebsite = null
-				_data.companyInfo = []
+				_data.companyAddress = null;
+				_data.companySize = null;
+				_data.companyWebsite = null;
+				_data.companyInfo = [];
 				// _data.companyTitle = null
 
 				let parentElement = document.getElementsByClassName('job-detail-col-2')[0].getElementsByClassName('company-info')[0];
@@ -267,10 +267,10 @@ const extractedEachItemDetail = async (item) => {
 				_data.error = true;
 
 				// _data.companyTitle = null
-				_data.companyAddress = null
-				_data.companySize = null
-				_data.companyWebsite = null
-				_data.companyInfo = []
+				_data.companyAddress = null;
+				_data.companySize = null;
+				_data.companyWebsite = null;
+				_data.companyInfo = [];
 			}
 
 			return _data;
@@ -286,7 +286,7 @@ const extractedEachItemDetail = async (item) => {
 		item.createdDate = currentTime;
 		item.updatedDate = currentTime;
 		let results = { ...item, ...data };
-		browser.close();
+		await browser.close();
 		return results;
 	} catch (err) {
 		console.log('ERROR :: extractedEachItemDetail', err);
@@ -355,13 +355,13 @@ const crawlItemsMainFn = async () => {
 
 	let config = await commons.getConfig(cronJobName);
 	if (!config) {
-		config = await commons.updateConfig(cronJobName, { pageNum: 1 })
+		config = await commons.updateConfig(cronJobName, { pageNum: 1 });
 	}
-	console.log(config)
+	console.log(config);
 
-	let pageNum = config.pageNum
+	let pageNum = config.pageNum;
 	while (pageNum < maxPageNumber) {
-		await commons.updateConfig(cronJobName, { pageNum })
+		await commons.updateConfig(cronJobName, { pageNum });
 
 		let url = `${rootUrl}/viec-lam-trang-${pageNum}.html`;
 		console.log(

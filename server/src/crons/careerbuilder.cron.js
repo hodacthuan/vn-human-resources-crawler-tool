@@ -40,7 +40,7 @@ const mainPageScrape = async () => {
 					_data.companyUrl = companyUrl;
 					// data.push(_data);
 					data.push({ jobTitle, jobUrl, companyTitle, companyUrl });
-				} catch (err) {}
+				} catch (err) { }
 			}
 
 			return data;
@@ -50,7 +50,7 @@ const mainPageScrape = async () => {
 		console.log(`Extract page ${index}`);
 		await page.click(`div.paginationTwoStatus > a`);
 	}
-	browser.close();
+	await browser.close();
 	return results;
 };
 
@@ -226,7 +226,7 @@ const extractedEachjobDetail = async (item) => {
 	item.createdDate = new Date();
 	item.updatedDate = new Date();
 	let results = { ...item, ...data };
-	browser.close();
+	await browser.close();
 	return results;
 };
 
@@ -295,7 +295,7 @@ const extractedEachCompanyDetail = async (item) => {
 		item.createdDate = new Date();
 		item.updatedDate = new Date();
 		let results = { ...item, ...data };
-		browser.close();
+		await browser.close();
 		return results;
 	} catch (err) {
 		console.log('ERROR');

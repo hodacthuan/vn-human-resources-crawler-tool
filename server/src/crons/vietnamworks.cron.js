@@ -42,7 +42,7 @@ const VietnamworkScrape = async () => {
 		console.log(`Extract page ${index}`);
 		await page.click(`ul.ais-pagination > li:nth-child(${index + 2})  > a`);
 	}
-	browser.close();
+	await browser.close();
 	return results;
 };
 
@@ -230,7 +230,7 @@ const extractedEachjobDetailVietnamworks = async (item) => {
 		return _data;
 	});
 	let results = { ...item, ...data };
-	browser.close();
+	await browser.close();
 	return results;
 };
 

@@ -1120,10 +1120,10 @@ MyworkUtils.myworkGetToken = (token) => {
 
         request(optionsUserInfo, function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                commons.debug('Use existing token');
+                commons.debug(`Use existing token`);
                 resolve(token);
             } else {
-                commons.debug('Get new token');
+                commons.debug(`Get new token`);
 
                 request(optionsLogin, function (error, response, body) {
                     if (!error && response.statusCode == 200) {
@@ -1360,6 +1360,7 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
                     if (!candidate) {
                         commons.debug(`Crawl general info of candidate ${initCandidate.candidateIdFromSource}`);
                         let crawlCandidate = await MyworkUtils.extractedEachItemDetail(globalPage, initCandidate);
+                        commons.debug(crawlCandidate);
 
                         if (crawlCandidate) {
                             candidate = await commons.updateCandidate(crawlCandidate);
@@ -1367,10 +1368,20 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
                     }
 
                     if (candidate && (!(candidate.candidatePhone && candidate.candidateEmail))) {
-                        commons.debug(`Crawl contact info of candidate ${initCandidate.candidateIdFromSource}`);
                         global.token = await MyworkUtils.myworkGetToken(token);
                         commons.debug(token);
-                        let crawlCandidate = await MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate(globalPage, token, initCandidate);
+                        let crawlCandidate;
+
+                        while (!crawlCandidate) {
+                            commons.debug(`Crawl contact info of candidate ${initCandidate.candidateIdFromSource}`);
+                            crawlCandidate = await MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate(globalPage, token, initCandidate);
+
+                            if (!crawlCandidate) {
+                                await globalBrowser.close();
+                                global.globalBrowser = await puppeteer.launch({ args: ['--no-sandbox'] });
+                                global.globalPage = await globalBrowser.newPage();
+                            }
+                        }
                         commons.debug(crawlCandidate);
 
                         if (crawlCandidate) {
