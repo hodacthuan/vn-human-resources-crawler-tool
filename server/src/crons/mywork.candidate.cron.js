@@ -3,8 +3,9 @@ const MyworkUtils = require('../utils/mywork.util');
 
 const maxCategorie = 101;
 let MyworkCandidate = {};
+const puppeteer = require('puppeteer');
 
-MyworkCandidate.crawlEachItemAndsaveToDB = async (allItemsRaw) => {
+MyworkCandidate.crawlEachItemAndsaveToDB = async (page, allItemsRaw) => {
 	try {
 		let allJobs = commons.removeDuplicates(allItemsRaw);
 		commons.debug('Collection length: ' + allJobs.length);
@@ -18,7 +19,7 @@ MyworkCandidate.crawlEachItemAndsaveToDB = async (allItemsRaw) => {
 					process.nextTick(async () => {
 						//get job to check if it's exits inside database or not
 
-						let itemDetail = await MyworkUtils.extractedEachItemDetail(item);
+						let itemDetail = await MyworkUtils.extractedEachItemDetail(page, item);
 						if (itemDetail) {
 							itemDetail = MyworkUtils.scoreCandidate(itemDetail);
 							if (itemDetail) {
@@ -41,6 +42,9 @@ MyworkCandidate.crawlEachItemAndsaveToDB = async (allItemsRaw) => {
 MyworkCandidate.crawlJob = async () => {
 	console.log('Start job...');
 
+	const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+	const page = await browser.newPage();
+
 	while (true) {
 		let pageNum = 1;
 		let categorieNum = 0;
@@ -61,7 +65,7 @@ MyworkCandidate.crawlJob = async () => {
 		// }
 
 		let url = `https://mywork.com.vn/ung-vien/trang/${pageNum}?categories=${categorieNum}`;
-		const allItemsRaw = await MyworkUtils.mainPageScrape(url);
+		const allItemsRaw = await MyworkUtils.mainPageScrape(page, url);
 		commons.logger(`Page: ${pageNum}/ Category: ${categorieNum}/ Url: ${url}/ Items: ${allItemsRaw.length}`);
 
 		if ((Array.isArray(allItemsRaw) && allItemsRaw.length == 0) || (pageNum > 50)) {
@@ -79,7 +83,7 @@ MyworkCandidate.crawlJob = async () => {
 			await commons.updateConfig('MyworkCandidate', { pageNum, categorieNum });
 		} else {
 			pageNum++;
-			await MyworkCandidate.crawlEachItemAndsaveToDB(allItemsRaw);
+			await MyworkCandidate.crawlEachItemAndsaveToDB(page, allItemsRaw);
 
 			await commons.updateConfig('MyworkCandidate', { pageNum, categorieNum });
 		}

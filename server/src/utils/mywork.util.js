@@ -16,13 +16,11 @@ MyworkUtils.config = {
     password: 'tinthanhgroup@2020',
     endpoint: 'https://api.mywork.com.vn',
     downloadFile: 'file.xlsx'
-}
+};
 
-MyworkUtils.mainPageScrape = async (url) => {
+MyworkUtils.mainPageScrape = async (page, url) => {
     let allJobEachPage = [];
     try {
-        const browser = await commons.browserConfig();
-        const page = await browser.newPage();
 
         await page.goto(url);
         await page.waitFor(Math.floor(Math.random() * 1000) + 2000);
@@ -48,17 +46,15 @@ MyworkUtils.mainPageScrape = async (url) => {
             return data;
         });
 
-        browser.close();
     } catch (error) {
-        console.log('ERROR :: Mywork candidate mainPageScrape fail', error);
+        console.log('ERROR :: Mywork candidate mainPageScrapeFailed', error);
     }
     return allJobEachPage;
 };
 
-MyworkUtils.extractedEachItemDetail = async (item) => {
+MyworkUtils.extractedEachItemDetail = async (page, item) => {
     try {
-        const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-        const page = await browser.newPage();
+
         await page.goto(item.candidateUrl);
         await page.waitFor(Math.floor(Math.random() * 1000) + 2000);
         //code at fontend
@@ -616,7 +612,7 @@ MyworkUtils.extractedEachItemDetail = async (item) => {
         });
 
         if (data.error) {
-            return
+            return;
         }
 
         Date.prototype.addDays = function (days) {
@@ -629,23 +625,19 @@ MyworkUtils.extractedEachItemDetail = async (item) => {
         item.updatedDate = currentTime;
         item.source = source;
         let results = { ...item, ...data };
-        browser.close();
 
         return results;
     } catch (err) {
-        console.log('ERROR :: extractedEachItemDetail', err);
+        console.log('ERROR :: extractedEachItemDetailFailed', err);
         return undefined;
     }
 };
 
-MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate = async (token, item) => {
+MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate = async (page, token, item) => {
 
-    MyworkUtils.myworkSubmitToViewCandidateInfo(MyworkUtils.url2cvId(item.candidateUrl))
+    MyworkUtils.myworkSubmitToViewCandidateInfo(MyworkUtils.url2cvId(item.candidateUrl));
 
     try {
-        const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-        const page = await browser.newPage();
-
         const cookies = [{
             name: 'access_token',
             value: token,
@@ -704,7 +696,7 @@ MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate = async (token, item) =>
         });
 
         if (data.error) {
-            return
+            return;
         }
 
         Date.prototype.addDays = function (days) {
@@ -717,10 +709,10 @@ MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate = async (token, item) =>
         item.updatedDate = currentTime;
         item.source = source;
         let results = { ...item, ...data };
-        browser.close();
+
         return results;
     } catch (err) {
-        console.log('ERROR :: extractedEachItemDetail', err);
+        console.log('ERROR :: extractedEachItemDetailFailed', err);
         return undefined;
     }
 };
@@ -1092,7 +1084,7 @@ MyworkUtils.candidateInfoExportFileHandling = (files) => {
     let data = [];
     keys.forEach((key) => {
         let fileData = MyworkUtils.readAndHandleCandidateFile(files[key].path);
-        data = [...data, ...fileData]
+        data = [...data, ...fileData];
     });
 
     return data;
@@ -1119,10 +1111,10 @@ MyworkUtils.myworkGetToken = (token) => {
 
         request(optionsUserInfo, function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                commons.debug('Use existing token')
+                commons.debug('Use existing token');
                 resolve(token);
             } else {
-                commons.debug('Get new token')
+                commons.debug('Get new token');
 
                 request(optionsLogin, function (error, response, body) {
                     if (!error && response.statusCode == 200) {
@@ -1137,8 +1129,8 @@ MyworkUtils.myworkGetToken = (token) => {
                 });
             }
         });
-    })
-}
+    });
+};
 
 /**
  * Get favorite list for token
@@ -1161,8 +1153,8 @@ MyworkUtils.myworkGetFavoriteList = () => {
 
                 let results = [];
                 bodyParsed.data.forEach(item => {
-                    results.push(`${item.id}`)
-                })
+                    results.push(`${item.id}`);
+                });
 
                 resolve(results);
             } else {
@@ -1171,8 +1163,8 @@ MyworkUtils.myworkGetFavoriteList = () => {
                 reject(error);
             }
         });
-    })
-}
+    });
+};
 
 /**
  * Add CV Id to favorite list
@@ -1200,8 +1192,8 @@ MyworkUtils.myworkAddCV2FavoriteList = (myworkCvId) => {
                 reject(error);
             }
         });
-    })
-}
+    });
+};
 
 /**
  * Remove CV Id from favorite list
@@ -1229,8 +1221,8 @@ MyworkUtils.myworkRemoveFromFavoriteList = (myworkCvId) => {
                 reject(error);
             }
         });
-    })
-}
+    });
+};
 
 /**
  * Remove all CVs from favorite list
@@ -1240,25 +1232,25 @@ MyworkUtils.myworkRemoveFromFavoriteList = (myworkCvId) => {
 MyworkUtils.myworkRemoveAllFavoriteList = () => {
     return new Promise(async (resolve, reject) => {
         let allCvs = await MyworkUtils.myworkGetFavoriteList();
-        console.log('allCvs', allCvs)
+        console.log('allCvs', allCvs);
 
         await allCvs.reduce(function (promise, item) {
             return promise.then(function () {
                 return new Promise((resolve, reject) => {
                     process.nextTick(async () => {
 
-                        let cvId = await MyworkUtils.myworkRemoveFromFavoriteList(item)
+                        let cvId = await MyworkUtils.myworkRemoveFromFavoriteList(item);
 
-                        console.log('cvId', cvId)
+                        console.log('cvId', cvId);
                         resolve();
                     });
                 });
             });
         }, Promise.resolve());
 
-        resolve(allCvs)
-    })
-}
+        resolve(allCvs);
+    });
+};
 
 /**
  * Download XLSX file from favorite list
@@ -1277,17 +1269,17 @@ MyworkUtils.myworkDownloadCSVFileFavoriteList = async () => {
             },
         }).pipe(file)
             .on('finish', () => {
-                commons.debug(`The file is finished downloading.`)
+                commons.debug(`The file is finished downloading.`);
                 resolve();
             })
             .on('error', (error) => {
                 reject(error);
-            })
+            });
 
     }).catch(error => {
-        commons.debug(error)
+        commons.debug(error);
     });
-}
+};
 
 /**
  * Request mywork to view candidate connection info( email, phone)
@@ -1312,7 +1304,7 @@ MyworkUtils.myworkSubmitToViewCandidateInfo = (myworkCvId) => {
                 if (bodyParsed.data.viewed == true) {
                     resolve(myworkCvId);
                 } else {
-                    resolve(undefined)
+                    resolve(undefined);
                 }
 
             } else {
@@ -1321,8 +1313,8 @@ MyworkUtils.myworkSubmitToViewCandidateInfo = (myworkCvId) => {
                 reject(error);
             }
         });
-    })
-}
+    });
+};
 
 /**
  * Return Mywork CV_ID from URL
@@ -1330,11 +1322,11 @@ MyworkUtils.myworkSubmitToViewCandidateInfo = (myworkCvId) => {
  * @param {Array} myworkCvId
  */
 MyworkUtils.url2cvId = (url) => {
-    let cvId = []
-    cvId = url.split("/").filter((item) => (!isNaN(Number(item)) && item.length > 2))
+    let cvId = [];
+    cvId = url.split("/").filter((item) => (!isNaN(Number(item)) && item.length > 2));
 
-    return cvId[0]
-}
+    return cvId[0];
+};
 
 /**
  * Crawl all from list of URLs
@@ -1343,7 +1335,10 @@ MyworkUtils.url2cvId = (url) => {
  */
 MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
     commons.debug(urls);
-    let results = []
+    let results = [];
+
+    const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+    const page = await browser.newPage();
 
     await urls.reduce(function (promise, url) {
         return promise.then(function () {
@@ -1353,12 +1348,12 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
                         source: source,
                         candidateUrl: url,
                         candidateIdFromSource: MyworkUtils.url2cvId(url)
-                    }
+                    };
                     let candidate = await commons.getCandidate(initCandidate);
 
                     if (!candidate) {
-                        commons.debug(`Crawl general info of candidate ${initCandidate.candidateIdFromSource}`)
-                        let crawlCandidate = await MyworkUtils.extractedEachItemDetail(initCandidate);
+                        commons.debug(`Crawl general info of candidate ${initCandidate.candidateIdFromSource}`);
+                        let crawlCandidate = await MyworkUtils.extractedEachItemDetail(page, initCandidate);
 
                         if (crawlCandidate) {
                             candidate = await commons.updateCandidate(crawlCandidate);
@@ -1366,9 +1361,9 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
                     }
 
                     if (candidate && (!(candidate.candidatePhone && candidate.candidateEmail))) {
-                        commons.debug(`Crawl contact info of candidate ${initCandidate.candidateIdFromSource}`)
-                        global.token = await MyworkUtils.myworkGetToken(token)
-                        let crawlCandidate = await MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate(token, initCandidate);
+                        commons.debug(`Crawl contact info of candidate ${initCandidate.candidateIdFromSource}`);
+                        global.token = await MyworkUtils.myworkGetToken(token);
+                        let crawlCandidate = await MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate(page, token, initCandidate);
 
                         if (crawlCandidate) {
                             candidate = await commons.updateCandidate(crawlCandidate);
@@ -1384,7 +1379,9 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
         });
     }, Promise.resolve());
 
+    browser.close();
+
     return { data: results };
-}
+};
 
 module.exports = MyworkUtils;
