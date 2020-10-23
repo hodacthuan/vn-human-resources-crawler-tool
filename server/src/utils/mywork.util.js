@@ -52,11 +52,33 @@ MyworkUtils.mainPageScrape = async (page, url) => {
     return allJobEachPage;
 };
 
-MyworkUtils.extractedEachItemDetail = async (page, item) => {
+MyworkUtils.extractedEachItemDetail = async (page, item, token = undefined) => {
+
     try {
+        if (token) {
+            MyworkUtils.myworkSubmitToViewCandidateInfo(MyworkUtils.url2cvId(item.candidateUrl));
+
+            const cookies = [{
+                name: 'access_token',
+                value: token,
+                domain: 'mywork.com.vn',
+                path: '/',
+                expires: 1605963343,
+                httpOnly: false,
+                secure: false,
+                session: false
+            }];
+
+            await page.deleteCookie(...cookies);
+            await page.waitFor(100);
+
+            await page.setCookie(...cookies);
+            await page.waitFor(300);
+        }
 
         await page.goto(item.candidateUrl);
-        await page.waitFor(Math.floor(Math.random() * 1000) + 2000);
+        await page.waitForSelector('#box-contact', { visible: true, timeout: 5000 });
+
         //code at fontend
         let data = await page.evaluate(() => {
             let _data = {};
@@ -608,60 +630,6 @@ MyworkUtils.extractedEachItemDetail = async (page, item) => {
 
             }
 
-            return _data;
-        });
-
-        if (data.error) {
-            return;
-        }
-
-        Date.prototype.addDays = function (days) {
-            var date = new Date(this.valueOf());
-            date.setDate(date.getDate() + days);
-            return date;
-        };
-
-        let currentTime = new Date();
-        item.updatedDate = currentTime;
-        item.source = source;
-        let results = { ...item, ...data };
-
-        return results;
-    } catch (err) {
-        console.log('ERROR :: extractedEachItemDetailFailed', err);
-        return undefined;
-    }
-};
-
-MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate = async (page, token, item) => {
-
-    MyworkUtils.myworkSubmitToViewCandidateInfo(MyworkUtils.url2cvId(item.candidateUrl));
-
-    try {
-        const cookies = [{
-            name: 'access_token',
-            value: token,
-            domain: 'mywork.com.vn',
-            path: '/',
-            expires: 1605963343,
-            httpOnly: false,
-            secure: false,
-            session: false
-        }];
-
-        await page.deleteCookie(...cookies);
-        await page.waitFor(100);
-
-        await page.setCookie(...cookies);
-        await page.waitFor(300);
-
-        await page.goto(item.candidateUrl);
-        await page.waitForSelector('#box-contact', { visible: true, timeout: 5000 });
-
-        //code at fontend
-        let data = await page.evaluate(() => {
-            let _data = {};
-
             try {
                 let parentElement = document;
                 _data.candidateEmail = parentElement
@@ -673,13 +641,8 @@ MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate = async (page, token, it
 
             } catch (error) {
                 console.log(error);
-
-                _data.error = true;
-                _data.errorMessage = JSON.stringify(error);
-
                 _data.candidateEmail = null;
             }
-
             console.log(_data);
 
             try {
@@ -692,20 +655,21 @@ MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate = async (page, token, it
 
             } catch (error) {
                 console.log(error);
-
-                _data.error = true;
-                _data.errorMessage = JSON.stringify(error);
-
                 _data.candidatePhone = null;
             }
-
             console.log(_data);
+
 
             return _data;
         });
 
         if (data.error) {
             return;
+        }
+
+        if (!token) {
+            delete data.candidateEmail;
+            delete data.candidatePhone;
         }
 
         Date.prototype.addDays = function (days) {
@@ -1357,24 +1321,16 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
                     };
                     let candidate = await commons.getCandidate(initCandidate);
 
-                    if (!candidate) {
-                        commons.debug(`Crawl general info of candidate ${initCandidate.candidateIdFromSource}`);
-                        let crawlCandidate = await MyworkUtils.extractedEachItemDetail(globalPage, initCandidate);
-                        commons.debug(crawlCandidate);
-
-                        if (crawlCandidate) {
-                            candidate = await commons.updateCandidate(crawlCandidate);
-                        }
-                    }
-
-                    if (candidate && (!(candidate.candidatePhone && candidate.candidateEmail))) {
+                    if ((!candidate) || (candidate && (!(candidate.candidatePhone && candidate.candidateEmail)))) {
                         global.token = await MyworkUtils.myworkGetToken(token);
                         commons.debug(token);
-                        let crawlCandidate;
 
-                        while (!crawlCandidate) {
+                        let crawlCandidate;
+                        let count = 1;
+                        while ((!crawlCandidate) && (count < 5)) {
+                            count++;
                             commons.debug(`Crawl contact info of candidate ${initCandidate.candidateIdFromSource}`);
-                            crawlCandidate = await MyworkUtils.extractedHtmlAndGetContactInfoEachCandidate(globalPage, token, initCandidate);
+                            crawlCandidate = await MyworkUtils.extractedEachItemDetail(globalPage, initCandidate, token);
 
                             if (!crawlCandidate) {
                                 await globalBrowser.close();
