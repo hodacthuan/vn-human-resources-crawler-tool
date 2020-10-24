@@ -4,6 +4,7 @@ const CandidateModel = require('../models/candidate.model');
 const ConfigModel = require('../models/config.model');
 const CONFIG = require('../../config/config');
 const puppeteer = require('puppeteer');
+const moment = require('moment');
 
 const commons = {
 	sleep: (ms) => {
@@ -197,8 +198,7 @@ commons.updateJob = async (company, item) => {
 };
 
 commons.cleanUpJob = async () => {
-	var moment = require('moment');
-	var older_than = moment().subtract(CONFIG.REMOVEJOB_DAYS, 'days').toDate();
+	let older_than = moment().subtract(CONFIG.REMOVEJOB_DAYS, 'days').toDate();
 	JobModel.find({ createdDate: { $lte: older_than } })
 		.deleteMany()
 		.exec()
@@ -212,11 +212,11 @@ commons.cleanUpJob = async () => {
 };
 
 commons.showIP = () => {
-	var os = require('os');
-	var ifaces = os.networkInterfaces();
+	let os = require('os');
+	let ifaces = os.networkInterfaces();
 
 	Object.keys(ifaces).forEach(function (ifname) {
-		var alias = 0;
+		let alias = 0;
 
 		ifaces[ifname].forEach(function (iface) {
 			if ('IPv4' !== iface.family || iface.internal !== false) {
@@ -269,8 +269,8 @@ commons.updateConfig = async (jobName, data) => {
 };
 
 commons.fileExtend = (target) => {
-	var key, obj;
-	for (var i = 1, l = arguments.length; i < l; i++) {
+	let key, obj;
+	for (let i = 1, l = arguments.length; i < l; i++) {
 		if ((obj = arguments[i])) {
 			for (key in obj)
 				target[key] = obj[key];
