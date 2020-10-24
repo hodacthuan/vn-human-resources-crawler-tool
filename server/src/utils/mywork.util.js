@@ -9,11 +9,118 @@ const source = 'MyWork';
 
 let MyworkUtils = {};
 
+/**
+ * Configuration only for Mywork
+ * @return {*} Config data
+ */
 MyworkUtils.config = {
     user: process.env.MYWORK_USERNAME,
     password: process.env.MYWORK_PASSWORD,
     endpoint: 'https://api.mywork.com.vn',
-    downloadFile: 'file.xlsx'
+    downloadFileName: 'file.xlsx',
+    myworkFilterList: [8, 30, 31, 32, 43, 63, 74, 75],
+    myWorkCategory: {
+        2: "Ngân hàng/ Tài Chính",
+        3: "Bảo hiểm/ Tư vấn bảo hiểm",
+        4: "Đầu tư",
+        5: "Bất động sản",
+        6: "Kế toán - Kiểm toán",
+        7: "Ngân hàng/ Tài Chính",
+        8: "Hành chính - Văn phòng",
+        9: "Kiến trúc - Thiết kế nội thất",
+        10: "Xây dựng",
+        11: "undefined",
+        12: "Du lịch",
+        13: "Khách sạn - Nhà hàng",
+        14: "Công nghiệp",
+        15: "Công nghệ cao",
+        16: "Công nghiệp",
+        17: "Dệt may - Da giày",
+        18: "In ấn - Xuất bản",
+        19: "Lao động phổ thông",
+        20: "Nông - Lâm - Ngư nghiệp",
+        21: "Ô tô - Xe máy",
+        22: "Thủ công mỹ nghệ",
+        23: "Vật tư/Thiết bị/Mua hàng",
+        24: "Làm bán thời gian",
+        25: "Làm bán thời gian",
+        26: "Nhân viên trông quán internet",
+        27: "Promotion Girl/ Boy (PG-PB)",
+        28: "Sinh viên làm thêm",
+        29: "Thực tập",
+        30: "Nhân viên kinh doanh",
+        31: "Bán hàng",
+        32: "Nhân viên kinh doanh",
+        33: "Quản trị kinh doanh",
+        34: "Xuất - Nhập khẩu",
+        35: "IT phần cứng/mạng",
+        36: "Games",
+        37: "IT phần cứng/mạng",
+        38: "IT phần mềm",
+        39: "Thiết kế đồ họa - Web",
+        40: "Thương mại điện tử",
+        41: "Biên tập/ Báo chí/ Truyền hình",
+        42: "Biên tập/ Báo chí/ Truyền hình",
+        43: "Marketing - PR",
+        44: "Tiếp thị - Quảng cáo",
+        45: "Tổ chức sự kiện - Quà tặng",
+        46: "Bưu chính",
+        47: "Bưu chính",
+        48: "Điện tử viễn thông",
+        49: "Hàng gia dụng",
+        50: "Hàng gia dụng",
+        51: "Mỹ phẩm - Trang sức",
+        52: "Thời trang",
+        53: "Thực phẩm - Đồ uống",
+        54: "Kỹ thuật ứng dụng",
+        55: "Bảo vệ/ An ninh/ Vệ sỹ",
+        56: "Phiên dịch/ Ngoại ngữ",
+        57: "Dịch vụ",
+        58: "Giáo dục - Đào tạo",
+        59: "Hàng hải",
+        60: "Hàng không",
+        61: "Người giúp việc/ Phục vụ/ Tạp vụ",
+        62: "Pháp luật/ Pháp lý",
+        63: "Tư vấn/ Chăm sóc khách hàng",
+        64: "Vận tải - Lái xe/ Tài xế",
+        65: "Y tế - Dược",
+        66: "undefined",
+        67: "Cơ khí - Chế tạo",
+        68: "Dầu khí - Hóa chất",
+        69: "Điện - Điện tử - Điện lạnh",
+        70: "Hóa học - Sinh học",
+        71: "Kỹ thuật",
+        72: "Kỹ thuật ứng dụng",
+        73: "undefined",
+        74: "Hành chính - Văn phòng",
+        75: "Nhân sự",
+        76: "Thư ký - Trợ lý",
+        77: "Kỹ thuật",
+        78: "Hoạch định - Dự án",
+        79: "Ngành nghề khác",
+        80: "Nghệ thuật - Điện ảnh",
+        81: "Thiết kế - Mỹ thuật",
+        82: "Quan hệ đối ngoại",
+        83: "undefined",
+        84: "Xuất khẩu lao động",
+        85: "Startup",
+        86: "Freelance",
+        87: "undefined",
+        88: "QA-QC/ Thẩm định/ Giám định",
+        89: "Môi trường",
+        90: "Phi chính phủ/ Phi lợi nhuận",
+        91: "Lương cao",
+        92: "Việc làm cấp cao",
+        93: "undefined",
+        94: "Công chức - Viên chức",
+        95: "Phát triển thị trường",
+        96: "undefined",
+        97: "undefined",
+        98: "Giao nhận/ Vận chuyển/ Kho bãi",
+        99: "Làm đẹp/ Thể lực/ Spa",
+        100: "Làm đẹp/ Thể lực/ Spa",
+        101: "Hàng không",
+    },
 };
 
 /**
@@ -700,120 +807,25 @@ MyworkUtils.myworkEachCandidateDetail = async (page, item, token = undefined) =>
     }
 };
 
-MyworkUtils.myworkFilterList = [8, 30, 31, 32, 43, 63, 74, 75];
-
-MyworkUtils.myWorkCategory = {
-    2: "Ngân hàng/ Tài Chính",
-    3: "Bảo hiểm/ Tư vấn bảo hiểm",
-    4: "Đầu tư",
-    5: "Bất động sản",
-    6: "Kế toán - Kiểm toán",
-    7: "Ngân hàng/ Tài Chính",
-    8: "Hành chính - Văn phòng",
-    9: "Kiến trúc - Thiết kế nội thất",
-    10: "Xây dựng",
-    11: "undefined",
-    12: "Du lịch",
-    13: "Khách sạn - Nhà hàng",
-    14: "Công nghiệp",
-    15: "Công nghệ cao",
-    16: "Công nghiệp",
-    17: "Dệt may - Da giày",
-    18: "In ấn - Xuất bản",
-    19: "Lao động phổ thông",
-    20: "Nông - Lâm - Ngư nghiệp",
-    21: "Ô tô - Xe máy",
-    22: "Thủ công mỹ nghệ",
-    23: "Vật tư/Thiết bị/Mua hàng",
-    24: "Làm bán thời gian",
-    25: "Làm bán thời gian",
-    26: "Nhân viên trông quán internet",
-    27: "Promotion Girl/ Boy (PG-PB)",
-    28: "Sinh viên làm thêm",
-    29: "Thực tập",
-    30: "Nhân viên kinh doanh",
-    31: "Bán hàng",
-    32: "Nhân viên kinh doanh",
-    33: "Quản trị kinh doanh",
-    34: "Xuất - Nhập khẩu",
-    35: "IT phần cứng/mạng",
-    36: "Games",
-    37: "IT phần cứng/mạng",
-    38: "IT phần mềm",
-    39: "Thiết kế đồ họa - Web",
-    40: "Thương mại điện tử",
-    41: "Biên tập/ Báo chí/ Truyền hình",
-    42: "Biên tập/ Báo chí/ Truyền hình",
-    43: "Marketing - PR",
-    44: "Tiếp thị - Quảng cáo",
-    45: "Tổ chức sự kiện - Quà tặng",
-    46: "Bưu chính",
-    47: "Bưu chính",
-    48: "Điện tử viễn thông",
-    49: "Hàng gia dụng",
-    50: "Hàng gia dụng",
-    51: "Mỹ phẩm - Trang sức",
-    52: "Thời trang",
-    53: "Thực phẩm - Đồ uống",
-    54: "Kỹ thuật ứng dụng",
-    55: "Bảo vệ/ An ninh/ Vệ sỹ",
-    56: "Phiên dịch/ Ngoại ngữ",
-    57: "Dịch vụ",
-    58: "Giáo dục - Đào tạo",
-    59: "Hàng hải",
-    60: "Hàng không",
-    61: "Người giúp việc/ Phục vụ/ Tạp vụ",
-    62: "Pháp luật/ Pháp lý",
-    63: "Tư vấn/ Chăm sóc khách hàng",
-    64: "Vận tải - Lái xe/ Tài xế",
-    65: "Y tế - Dược",
-    66: "undefined",
-    67: "Cơ khí - Chế tạo",
-    68: "Dầu khí - Hóa chất",
-    69: "Điện - Điện tử - Điện lạnh",
-    70: "Hóa học - Sinh học",
-    71: "Kỹ thuật",
-    72: "Kỹ thuật ứng dụng",
-    73: "undefined",
-    74: "Hành chính - Văn phòng",
-    75: "Nhân sự",
-    76: "Thư ký - Trợ lý",
-    77: "Kỹ thuật",
-    78: "Hoạch định - Dự án",
-    79: "Ngành nghề khác",
-    80: "Nghệ thuật - Điện ảnh",
-    81: "Thiết kế - Mỹ thuật",
-    82: "Quan hệ đối ngoại",
-    83: "undefined",
-    84: "Xuất khẩu lao động",
-    85: "Startup",
-    86: "Freelance",
-    87: "undefined",
-    88: "QA-QC/ Thẩm định/ Giám định",
-    89: "Môi trường",
-    90: "Phi chính phủ/ Phi lợi nhuận",
-    91: "Lương cao",
-    92: "Việc làm cấp cao",
-    93: "undefined",
-    94: "Công chức - Viên chức",
-    95: "Phát triển thị trường",
-    96: "undefined",
-    97: "undefined",
-    98: "Giao nhận/ Vận chuyển/ Kho bãi",
-    99: "Làm đẹp/ Thể lực/ Spa",
-    100: "Làm đẹp/ Thể lực/ Spa",
-    101: "Hàng không",
-};
-
+/**
+ * Return array profession for filter
+ * 
+ * @return {Array} Profession array
+ */
 MyworkUtils.myworkCandidateProfession = () => {
     let results = [];
-    MyworkUtils.myworkFilterList.forEach((item) => {
-        results.push(MyworkUtils.myWorkCategory[item]);
+    MyworkUtils.config.myworkFilterList.forEach((item) => {
+        results.push(MyworkUtils.config.myWorkCategory[item]);
     });
 
     return results;
 };
 
+/**
+ * Get list of candidate data for frontend
+ * 
+ * @return {Array} Config data
+ */
 MyworkUtils.getMarketingCandidateList = async () => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -913,6 +925,11 @@ MyworkUtils.getMarketingCandidateList = async () => {
     });
 };
 
+/**
+ * Perform updating one candidate data.
+ * 
+ * @param {*} candidate data
+ */
 MyworkUtils.updateMyworkImportCandidateInfo = async (data, task = null) => {
     let resultArray = [];
 
@@ -945,6 +962,12 @@ MyworkUtils.updateMyworkImportCandidateInfo = async (data, task = null) => {
     return resultArray;
 };
 
+/**
+ * Score each candidate by its data and then save to DB.
+ * 
+ * @param {*} itemDetail candidate data
+ * @return {*} candidate data with scrore number
+ */
 MyworkUtils.scoreCandidate = (itemDetail) => {
     try {
         let candidateScore = 0;
@@ -1024,6 +1047,12 @@ MyworkUtils.scoreCandidate = (itemDetail) => {
     }
 };
 
+/**
+ * Read and handle candidate file
+ * 
+ * @param {String} path file path
+ * @return {*} data after handling candidate file
+ */
 MyworkUtils.readAndHandleCandidateFile = (path) => {
     const wb = XLSX.readFile(path);
     xlsxData = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], {
@@ -1062,6 +1091,12 @@ MyworkUtils.readAndHandleCandidateFile = (path) => {
     return data;
 };
 
+/**
+ * Read and handle candidate file uploaded from frontend.
+ * 
+ * @param {*} Files file object
+ * @return {*} data after handling candidate file and merged
+ */
 MyworkUtils.candidateInfoExportFileHandling = (files) => {
     const keys = Object.keys(files), k = keys[0];
     let data = [];
@@ -1241,7 +1276,7 @@ MyworkUtils.myworkRemoveAllFavoriteList = () => {
  * @param {Array}  favoriteList
  */
 MyworkUtils.myworkDownloadCSVFileFavoriteList = async () => {
-    let file = fs.createWriteStream(MyworkUtils.config.downloadFile);
+    let file = fs.createWriteStream(MyworkUtils.config.downloadFileName);
 
     await new Promise((resolve, reject) => {
         let stream = request({
