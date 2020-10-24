@@ -95,8 +95,20 @@ app.post('/api/mywork/crawl', async function (req, res, next) {
 			res.send('Error: Urls not exist in body');
 		}
 
-		let response = await MyworkUtils.myworkCrawlDataByUrls(urls);
-		res.send(response);
+		let data = await MyworkUtils.myworkCrawlDataByUrls(urls);
+		let statusCode = 400;
+		let message = "";
+
+		if (data && data.length > 0) {
+			statusCode = 200;
+			message = "Data crawled successfully!";
+		}
+
+		res.send({
+			statusCode,
+			message,
+			data
+		});
 	} catch (error) {
 		res.send(error);
 	}

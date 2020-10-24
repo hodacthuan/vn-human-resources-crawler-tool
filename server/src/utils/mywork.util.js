@@ -10,9 +10,7 @@ const source = 'MyWork';
 let MyworkUtils = {};
 
 MyworkUtils.config = {
-    // user: 'hodacthuan94@gmail.com',
     user: 'mywork@tinthanhgroup.vn',
-    // password: '12345678',
     password: 'tinthanhgroup@2020',
     endpoint: 'https://api.mywork.com.vn',
     downloadFile: 'file.xlsx'
@@ -1344,8 +1342,10 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
                             candidate = await commons.updateCandidate(crawlCandidate);
                         }
                     }
+                    if (candidate && candidate.candidatePhone && candidate.candidateEmail) {
+                        results.push(candidate);
+                    }
 
-                    results.push(candidate);
                     await commons.sleep(Math.floor(Math.random() * 100) + 100);
 
                     resolve();
@@ -1354,7 +1354,7 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
         });
     }, Promise.resolve());
 
-    return { data: results };
+    return results;
 };
 
 module.exports = MyworkUtils;
