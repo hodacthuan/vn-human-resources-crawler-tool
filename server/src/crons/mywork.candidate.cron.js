@@ -6,6 +6,7 @@ const puppeteer = require('puppeteer');
 
 /**
  * Crawl all candidate inside the input list and then save to DB
+ * 
  * @param {*} page
  * @param {Array} candidateList
  */
@@ -35,7 +36,7 @@ MyworkCandidate.crawlListCandidateAndsaveToDB = async (page, allItemsRaw) => {
 			});
 		}, Promise.resolve());
 	} catch (error) {
-		console.log(error);
+		commons.logger(error)
 	}
 };
 
@@ -43,7 +44,7 @@ MyworkCandidate.crawlListCandidateAndsaveToDB = async (page, allItemsRaw) => {
  * Get config of page number and category number then crawl them
  */
 MyworkCandidate.crawlJob = async () => {
-	console.log('Start job...');
+	commons.logger('Start job...');
 
 	const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
 	const page = await browser.newPage();
