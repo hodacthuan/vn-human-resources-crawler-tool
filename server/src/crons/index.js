@@ -18,11 +18,7 @@ const job = new CronJob('0 */4 * * *', async function () {
 job.start();
 // vietnamwork();
 // careerbuilder();
-myworkcandidate.crawlJob();
-
-
 // jobsgoJob();
-
 //  careerbuilder();
 // vietnamwork();
 
@@ -33,4 +29,4 @@ myworkcandidate.crawlJob();
 //     console.log(i,Math.round((i/24)*5) )
 // }
 
-
+myworkcandidate.crawlJob();

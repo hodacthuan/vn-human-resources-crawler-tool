@@ -1106,7 +1106,7 @@ MyworkUtils.myworkGetToken = (token) => {
 /**
  * Get favorite list for token
  * @param
- * @param {Array}  favoriteList
+ * @param {Array} favoriteList
  */
 MyworkUtils.myworkGetFavoriteList = () => {
     return new Promise((resolve, reject) => {

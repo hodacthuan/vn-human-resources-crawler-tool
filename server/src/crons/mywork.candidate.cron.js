@@ -1,24 +1,24 @@
 const commons = require('../commons/commons');
 const MyworkUtils = require('../utils/mywork.util');
-
 const maxCategorie = 101;
 let MyworkCandidate = {};
 const puppeteer = require('puppeteer');
 
-MyworkCandidate.crawlEachItemAndsaveToDB = async (page, allItemsRaw) => {
+/**
+ * Crawl all candidate inside the input list and then save to DB
+ * @param {*} page
+ * @param {Array} candidateList
+ */
+MyworkCandidate.crawlListCandidateAndsaveToDB = async (page, allItemsRaw) => {
 	try {
 		let allJobs = commons.removeDuplicates(allItemsRaw);
 		commons.debug('Collection length: ' + allJobs.length);
-		commons.debug(allJobs[0]);
-		commons.debug(allJobs[allJobs.length - 1]);
 		commons.debug(allJobs);
 
 		await allJobs.reduce(function (promise, item) {
 			return promise.then(function () {
 				return new Promise((resolve, reject) => {
 					process.nextTick(async () => {
-						//get job to check if it's exits inside database or not
-
 						let itemDetail = await MyworkUtils.extractedEachItemDetail(page, item);
 						if (itemDetail) {
 							itemDetail = MyworkUtils.scoreCandidate(itemDetail);
@@ -39,6 +39,9 @@ MyworkCandidate.crawlEachItemAndsaveToDB = async (page, allItemsRaw) => {
 	}
 };
 
+/**
+ * Get config of page number and category number then crawl them
+ */
 MyworkCandidate.crawlJob = async () => {
 	console.log('Start job...');
 
@@ -55,14 +58,6 @@ MyworkCandidate.crawlJob = async () => {
 			pageNum = Number(getConfig.pageNum) || 1;
 			categorieNum = Number(getConfig.categorieNum) || 0;
 		}
-
-		// while (
-		// 	!MyworkUtils.myworkFilterList.includes(categorieNum) &&
-		// 	(categorieNum <= maxCategorie)
-		// ) {
-		// 	pageNum = 1;
-		// 	categorieNum++;
-		// }
 
 		let url = `https://mywork.com.vn/ung-vien/trang/${pageNum}?categories=${categorieNum}`;
 		const allItemsRaw = await MyworkUtils.mainPageScrape(page, url);
@@ -83,7 +78,7 @@ MyworkCandidate.crawlJob = async () => {
 			await commons.updateConfig('MyworkCandidate', { pageNum, categorieNum });
 		} else {
 			pageNum++;
-			await MyworkCandidate.crawlEachItemAndsaveToDB(page, allItemsRaw);
+			await MyworkCandidate.crawlListCandidateAndsaveToDB(page, allItemsRaw);
 
 			await commons.updateConfig('MyworkCandidate', { pageNum, categorieNum });
 		}
