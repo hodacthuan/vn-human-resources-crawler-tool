@@ -10,16 +10,21 @@ const source = 'MyWork';
 let MyworkUtils = {};
 
 MyworkUtils.config = {
-    user: 'mywork@tinthanhgroup.vn',
-    password: 'tinthanhgroup@2020',
+    user: process.env.MYWORK_USERNAME,
+    password: process.env.MYWORK_PASSWORD,
     endpoint: 'https://api.mywork.com.vn',
     downloadFile: 'file.xlsx'
 };
 
-MyworkUtils.mainPageScrape = async (page, url) => {
+/**
+ * Crawl the page contain list of candidates
+ * @param {*} page
+ * @param {Array} url
+ * @return {Array} Array of raw candidate data
+ */
+MyworkUtils.myworkCrawlListofCandidate = async (page, url) => {
     let allJobEachPage = [];
     try {
-
         await page.goto(url);
         await page.waitFor(Math.floor(Math.random() * 1000) + 2000);
 
@@ -50,7 +55,14 @@ MyworkUtils.mainPageScrape = async (page, url) => {
     return allJobEachPage;
 };
 
-MyworkUtils.extractedEachItemDetail = async (page, item, token = undefined) => {
+/**
+ * Crawl each candidates details info
+ * @param {*} page
+ * @param {*} candidate init data
+ * @param {String} token (optional)
+ * @return {*} Candidate data
+ */
+MyworkUtils.myworkEachCandidateDetail = async (page, item, token = undefined) => {
 
     try {
         if (token) {
@@ -1328,7 +1340,7 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
                         while ((!crawlCandidate) && (count < 5)) {
                             count++;
                             commons.debug(`Crawl contact info of candidate ${initCandidate.candidateIdFromSource}`);
-                            crawlCandidate = await MyworkUtils.extractedEachItemDetail(globalPage, initCandidate, token);
+                            crawlCandidate = await MyworkUtils.myworkEachCandidateDetail(globalPage, initCandidate, token);
 
                             if (!crawlCandidate) {
                                 await globalBrowser.close();

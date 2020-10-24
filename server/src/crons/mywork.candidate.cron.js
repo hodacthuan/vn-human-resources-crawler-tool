@@ -19,7 +19,7 @@ MyworkCandidate.crawlListCandidateAndsaveToDB = async (page, allItemsRaw) => {
 			return promise.then(function () {
 				return new Promise((resolve, reject) => {
 					process.nextTick(async () => {
-						let itemDetail = await MyworkUtils.extractedEachItemDetail(page, item);
+						let itemDetail = await MyworkUtils.myworkEachCandidateDetail(page, item);
 						if (itemDetail) {
 							itemDetail = MyworkUtils.scoreCandidate(itemDetail);
 							if (itemDetail) {
@@ -60,7 +60,7 @@ MyworkCandidate.crawlJob = async () => {
 		}
 
 		let url = `https://mywork.com.vn/ung-vien/trang/${pageNum}?categories=${categorieNum}`;
-		const allItemsRaw = await MyworkUtils.mainPageScrape(page, url);
+		const allItemsRaw = await MyworkUtils.myworkCrawlListofCandidate(page, url);
 		commons.logger(`Page: ${pageNum}/ Category: ${categorieNum}/ Url: ${url}/ Items: ${allItemsRaw.length}`);
 
 		if ((Array.isArray(allItemsRaw) && allItemsRaw.length == 0) || (pageNum > 50)) {

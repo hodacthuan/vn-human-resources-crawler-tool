@@ -11,7 +11,6 @@ Before deploying the project:
 - Install tools needed:
     ```
     ./install-tools.sh
-
     ```
 
 - You have to create the `.env` file (refer to `example.env` file) in root folder then add MongoDB Url to `.env` file
@@ -20,7 +19,8 @@ Before deploying the project:
 
     ```
     MONGODB_URL=mongodb://localhost:27017
-
+    MYWORK_USERNAME=username
+    MYWORK_PASSWORD=password
     ```
 
 ## How to
