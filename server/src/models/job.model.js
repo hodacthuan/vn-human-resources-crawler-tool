@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose")
+const { Schema, model } = require("mongoose");
 
 const JobSchema = new Schema({
     source: {
@@ -6,24 +6,24 @@ const JobSchema = new Schema({
         required: true,
         default: null
     },
-    createdDate: {   //ngày ghi vào database
+    createdDate: {
         type: Date,
         default: null
     },
-    updatedDate: {   //ngày sửa data base
+    updatedDate: {
         type: Date,
         default: null
     },
-    companyId: {  // id của công ty đó ở model công ty
+    companyId: {
         type: Schema.Types.ObjectId,
         ref: 'Company',
         default: null
     },
-    companyTitle: {   //tên công ty đó
+    companyTitle: {
         type: String,
         default: null
     },
-    jobTitle: {   //Tên Position đăng tuyển
+    jobTitle: {
         type: String,
         required: true,
         default: null
@@ -32,7 +32,7 @@ const JobSchema = new Schema({
         type: String,
         default: null
     }],
-    jobUrl: {   //Link bài đăng tuyển
+    jobUrl: {
         type: String,
         required: true,
         unique: true,
@@ -88,7 +88,7 @@ const JobSchema = new Schema({
         default: null
     },
 
-    jobLocation: {   // Nơi làm việc của job này
+    jobLocation: {
         type: String,
         default: null
     },
@@ -97,9 +97,9 @@ const JobSchema = new Schema({
         default: null
     },
 
-})
+});
 
 
-const JobModel = model("Job", JobSchema)
+const JobModel = model("Job", JobSchema);
 
-module.exports = JobModel
+module.exports = JobModel;

@@ -1,53 +1,53 @@
-const { Schema, model } = require("mongoose")
+const { Schema, model } = require("mongoose");
 
 const CompanySchema = new Schema({
-    source: {           //nguồn từ trang nào
+    source: {
         type: String,
         default: null
     },
-    createdDate: {   //ngày ghi vào database
+    createdDate: {
         type: Date,
-        default:null
+        default: null
     },
-    updatedDate: {   //ngày sửa data base
+    updatedDate: {
         type: Date,
-        default:null
+        default: null
     },
-    companyTitle: {     //Tên doanh nghiệp//Tên Hộ kinh doanh
+    companyTitle: {
         type: String,
         required: true,
         unique: true,
     },
-    companyInfo: [{   //thông tin công ty
+    companyInfo: [{
         type: String,
         default: null
     }],
-    companyImage: [{   //hình ảnh công ty
+    companyImage: [{
         type: String,
         default: null
     }],
 
-    companySize: {    //Quy mô doanh nghiệp
+    companySize: {
         type: String,
         default: null
     },
-    companyAddress: {  //địa chỉ đầy đủ của công ty
+    companyAddress: {
         type: String,
         default: null
     },
-    companyCity: {        //Thành Phố
+    companyCity: {
         type: String,
         default: null
     },
-    companyDistrict: {     //Quận/Huyện
+    companyDistrict: {
         type: String,
         default: null
     },
-    companyUrl: {    //URL của công ty từ nguồn trang tìm việc
+    companyUrl: {
         type: String,
         default: null
     },
-    companyWebsite: {  //website cua cong ty
+    companyWebsite: {
         type: String,
         default: null
     },
@@ -55,36 +55,33 @@ const CompanySchema = new Schema({
         type: String,
         default: null
     },
-    companyEmail: {  
+    companyEmail: {
         type: String,
         default: null
     },
-    companyBusiness: [{   //Lĩnh vực kinh doanh
+    companyBusiness: [{
         type: String,
         default: null
     }],
-    companyContactName: {   //Tên người đăng tin
+    companyContactName: {
         type: String,
         default: null
     },
-    companyContactPosition: {   //Chức vụ người đăng tin
+    companyContactPosition: {
         type: String,
         default: null
     },
 
-    companyContactEmail: {  //Email liên hệ
+    companyContactEmail: {
         type: String,
         default: null
     },
-    companyContactMobile: {  //SDT liên hệ  
+    companyContactMobile: {
         type: String,
         default: null
     },
-})
+});
 
+const CompanyModel = model("Company", CompanySchema);
 
-
-
-const CompanyModel = model("Company", CompanySchema)
-
-module.exports = CompanyModel
+module.exports = CompanyModel;
