@@ -180,7 +180,6 @@ MyworkUtils.myworkEachCandidateDetail = async (page, item, token = undefined) =>
                 value: token,
                 domain: 'mywork.com.vn',
                 path: '/',
-                expires: 1605963343,
                 httpOnly: false,
                 secure: false,
                 session: false
