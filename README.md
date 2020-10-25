@@ -1,46 +1,98 @@
-# CRAWL-TOOL SERVICE
+# VN HUMAN RESOURCES CRAWLER TOOL
 
-## Introduction
+## Table of content
+- About
+    - Introduction
+    - Built with
+    - Architecture
 
-This tool help us to crawl data from Mywork, Careerbuilder and Vietnamwork and then save them to MongoDB
+- Getting Started
+    - Prerequisites
+    - Installation
+    - Useful scripts
+- APIs Document
+- Usage
+- Roadmap
+- Contributing
+- License
+- Contact
+- Acknowledgements
 
+## About
+### Introduction
+This small tool help you to crawl data( job, candidate, company) from some human resource page in VN( like  Mywork, Careerbuilder, Vietnamwork,...) and then save them to MongoDB
 
-## Prerequisite
+It come with a frontend small page help you to update candidate infomation so you can update each data by yourself after crawling.
 
-Before deploying the project:
+![Image description](./readme/frontend-screenshot.png)
+
+### Built with
+
+SERVER (Crawler-tool)
+- [Nodejs](https://nodejs.org/en/)
+- [Puppeteer](https://www.npmjs.com/package/puppeteer)
+- [ExpressJs](https://expressjs.com/) Framework
+- [MongooseJs](https://mongoosejs.com/)
+- [Xlsx](https://www.npmjs.com/package/xlsx) For parse xlsx to object
+
+WWW (Frontend)
+- [ReactJS](https://reactjs.org/)
+- [MaterialUI](https://material-ui.com/)
+- [React-table](https://www.npmjs.com/package/react-table)
+
+DevOps
+- [Docker-compose](https://docs.docker.com/compose/)
+
+### Architecture
+
+## Getting Started
+### Prerequisite
+
+OS system: The ideal OS system for this project is Linux, all script which is usefull for start the project were written by bash, so I recommend that you should prepare a VPS which is built which Ubuntu or some other distribution based on Linux kernel
+
+Database: We need a MongoDB for storing the data which is crawled.
+
+### Installation
+- Clone the source code.
 - Install tools needed:
+    - If you are using Window OS system, please install all software needed for this project by yourself: Nodejs, Docker, AWS-CLI,...
+    - If you are working on Linux distribution based, It's quite easy to install and start this project because all the scripts needed for installation and start the project was written, just install all tools needed by running this script below after cloning the source code
+
+        ```bash
+        ./install-tools.sh
+        ```
+- Setting up the environment: You have to create the `.env` file (refer to `example.env` file) in root folder then add MongoDB Url to `.env` file
+
+    - Example:
+
+        ```bash
+        MONGODB_URL=mongodb://localhost:27017
+        MYWORK_USERNAME=username
+        MYWORK_PASSWORD=password
+        REACT_APP_LOGIN_PASSWORD=password
+        ```
+
+- Up to production
+    ```bash
+    ./up.sh prod
     ```
-    ./install-tools.sh
+- Up to locally (for developement purpose)
+    ```bash
+    ./up.sh prod
+    ```
+    
+### Useful scripts
+
+- Log the server:
+    ```bash
+    ./log.sh server
+    ```
+- Execute to the server:
+    ```
+    ./exec.sh server
     ```
 
-- You have to create the `.env` file (refer to `example.env` file) in root folder then add MongoDB Url to `.env` file
-
-    Eg:
-
-    ```
-    MONGODB_URL=mongodb://localhost:27017
-    MYWORK_USERNAME=username
-    MYWORK_PASSWORD=password
-    REACT_APP_LOGIN_PASSWORD=password
-    ```
-
-## How to
-
-```
-Up to production:
-./up.sh prod
-
-Up to local (for developement):
-./up.sh local
-
-Log server:
-./log.sh server
-
-Exec to server:
-./exec.sh server
-```
-
-## APIs DOC
+## APIs Document
 
 **API:** POST http://crawl.joco.asia:4000/api/mywork/crawl
 
@@ -140,3 +192,23 @@ RESPONSE:
     ]
 }
 ```
+## Usage
+## Roadmap
+## Contributing
+
+- Fork the Project
+- Create your Feature Branch (git checkout -b feature/AmazingFeature)
+- Commit your Changes (git commit -m 'Add some AmazingFeature')
+- Push to the Branch (git push origin feature/AmazingFeature)
+- Open a Pull Request
+
+## License
+Distributed under the MIT License. See LICENSE for more information.
+## Contact
+
+Thuan Ho - @your_twitter - hodacthuan94@gmail.com
+
+Project Link
+
+## Acknowledgements
+
