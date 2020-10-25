@@ -1,19 +1,24 @@
 const puppeteer = require('puppeteer');
 const mainUrl = 'https://careerbuilder.vn/viec-lam/tat-ca-viec-lam-vi.html';
 const source = 'Careerbuilder';
-
 const JobModel = require('../models/job.model');
 const CompanyModel = require('../models/company.model');
 const commons = require('../commons/commons');
 
+/**
+ * Crawl the list of Careerbuilder companies
+ * 
+ * @param {*} item init companies object
+ * @return {*} companies list
+ */
 const mainPageScrape = async () => {
 	const browser = await commons.browserConfig();
 	const page = await browser.newPage();
 
 	await page.goto(mainUrl);
-	var results = [];
-	var firstIndexPageNumber = 1;
-	var lastPageNumber = 2;
+	let results = [];
+	let firstIndexPageNumber = 1;
+	let lastPageNumber = 2;
 
 	for (let index = firstIndexPageNumber + 1; index <= lastPageNumber; index++) {
 		await page.waitFor(Math.floor(Math.random() * 1000) + 3000);
@@ -21,7 +26,7 @@ const mainPageScrape = async () => {
 		let allJobEachPage = await page.evaluate(() => {
 			let data = [];
 			let elements = document.querySelectorAll('.jobtitle');
-			for (var element of elements) {
+			for (let element of elements) {
 				let _data = {};
 				try {
 					let jobTitle = element.getElementsByClassName('job')[0].children[0]
@@ -54,6 +59,12 @@ const mainPageScrape = async () => {
 	return results;
 };
 
+/**
+ * Crawl Careerbuilder jobs details object
+ * 
+ * @param {*} item init job object
+ * @return {*} job data
+ */
 const extractedEachjobDetail = async (item) => {
 	const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
 	const page = await browser.newPage();
@@ -230,6 +241,12 @@ const extractedEachjobDetail = async (item) => {
 	return results;
 };
 
+/**
+ * Crawl Careerbuilder company details object
+ * 
+ * @param {*} item init company object
+ * @return {*} company data
+ */
 const extractedEachCompanyDetail = async (item) => {
 	try {
 		const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
@@ -303,16 +320,17 @@ const extractedEachCompanyDetail = async (item) => {
 	}
 };
 
+/**
+ * Start Careerbuilder cron jobs
+ * 
+ */
 const crawlJob = async () => {
 	console.log('Start job...');
 	await mainPageScrape().then(async (allJobsRaw) => {
-		//  console.log(allJobsRaw);
 
 		let allJobs = commons.removeDuplicates(allJobsRaw);
 		console.log('Collection length: ' + allJobs.length);
-		console.log(allJobs[0]);
-		console.log(allJobs[allJobs.length - 1]);
-		//console.log(allJobs);
+		console.log(allJobs);
 
 		await allJobs.reduce(function (promise, item) {
 			item.source = source;
@@ -350,7 +368,7 @@ const crawlJob = async () => {
 									_jobDetail
 								);
 								await commons.sleep(Math.floor(Math.random() * 1000) + 1000);
-								// console.log(_jobDetail);
+								commons.debug(_jobDetail);
 							}
 						}
 

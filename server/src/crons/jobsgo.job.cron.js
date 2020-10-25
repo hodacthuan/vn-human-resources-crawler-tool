@@ -7,6 +7,12 @@ const JobModel = require('../models/job.model');
 const CompanyModel = require('../models/company.model');
 const maxPageNumber = 800;
 
+/**
+ * Crawl the list of Jobgo candidate
+ * 
+ * @param {*} item init candidate object
+ * @return {*} candidate list
+ */
 const mainPageScrape = async (url) => {
 	let allItemEachPage = [];
 	try {
@@ -53,6 +59,12 @@ const mainPageScrape = async (url) => {
 	return allItemEachPage;
 };
 
+/**
+ * Crawl Jobgo job details
+ * 
+ * @param {*} item init job object
+ * @return {*} job detail
+ */
 const extractedEachItemDetail = async (item) => {
 	try {
 		console.log(`Extracting item ${item.jobUrl}`);
@@ -294,6 +306,12 @@ const extractedEachItemDetail = async (item) => {
 	}
 };
 
+/**
+ * Crawl Jobgo job details
+ * 
+ * @param {*} allItemsRaw init job object
+ * @return {*} list of job detail
+ */
 const extractedAllItemDetail = async (allItemsRaw) => {
 	try {
 		let allJobs = commons.removeDuplicates(allItemsRaw);
@@ -303,7 +321,6 @@ const extractedAllItemDetail = async (allItemsRaw) => {
 			return promise.then(function () {
 				return new Promise((resolve, reject) => {
 					process.nextTick(async () => {
-						//check if it's exits inside database or not
 						let getCompany = await CompanyModel.findOne({
 							source: item.source,
 							companyTitle: item.companyTitle,
@@ -318,7 +335,6 @@ const extractedAllItemDetail = async (allItemsRaw) => {
 							let iteamDataExtracted = await extractedEachItemDetail(item);
 
 							if (iteamDataExtracted) {
-								// console.log(iteamDataExtracted)
 								let updatedCompany = undefined;
 								if (!getCompany) {
 									// Create new company
@@ -350,6 +366,10 @@ const extractedAllItemDetail = async (allItemsRaw) => {
 	}
 };
 
+/**
+ * Start Jobgo cron jobs
+ * 
+ */
 const crawlItemsMainFn = async () => {
 	console.log(`Start job...${cronJobName} with URL: ${rootUrl}`);
 
@@ -369,7 +389,6 @@ const crawlItemsMainFn = async () => {
 		);
 
 		const allItemsRaw = await mainPageScrape(url);
-		// console.log(`Total item in page is ${allItemsRaw.length}`);
 
 		await extractedAllItemDetail(allItemsRaw);
 		pageNum++;

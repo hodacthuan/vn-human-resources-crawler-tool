@@ -4,6 +4,11 @@ const CONFIG = require('../../config/config');
 const JobModel = require('../models/job.model');
 const commons = require('../commons/commons');
 
+/**
+ * Crawl list of Vietnamwork job
+ * 
+ * @return {Array} list of Vietnamwork job
+ */
 const VietnamworkScrape = async () => {
 	const browser = await commons.browserConfig();
 	const page = await browser.newPage();
@@ -46,6 +51,12 @@ const VietnamworkScrape = async () => {
 	return results;
 };
 
+/**
+ * Crawl Vietnamwork job details
+ * 
+ * @param {*} item job details object
+ * @return {*} job details data
+ */
 const extractedEachjobDetailVietnamworks = async (item) => {
 	const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
 
@@ -234,6 +245,10 @@ const extractedEachjobDetailVietnamworks = async (item) => {
 	return results;
 };
 
+/**
+ * Start Vietnamwork cron jobs
+ * 
+ */
 const crawlJob = async () => {
 	console.log('Start job...');
 	await VietnamworkScrape().then(async (allJobsRaw) => {
