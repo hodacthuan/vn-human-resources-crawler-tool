@@ -10,28 +10,21 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const app = express();
 const port = 4000;
+const cors = require('./src/middlewares/cors');
 
 require('./src/commons/mongodb');
 require('./src/crons');
 
+//Global variable
 global.token = "";
-
 (async () => {
 	global.globalBrowser = await puppeteer.launch({ args: ['--no-sandbox'] });
 	global.globalPage = await globalBrowser.newPage();
 })();
 
-
 app.use(bodyParser.json());
 
-app.use(function (req, res, next) {
-	res.setHeader('Access-Control-Allow-Origin', '*');
-	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-	res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-	res.setHeader('Access-Control-Allow-Credentials', true);
-
-	next();
-});
+app.use(cors);
 
 app.get('/api/list', async (req, res) => {
 	let candidateList = await MyworkUtils.getMarketingCandidateList();
