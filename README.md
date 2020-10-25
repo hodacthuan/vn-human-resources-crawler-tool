@@ -49,7 +49,7 @@ METHOD: POST
 BODY-RAW-DATA:
 
 {
-    "data" :[
+    "urls" :[
         "https://mywork.com.vn/ho-so/4900532/qa-qc-leader.html"
     ]
 }

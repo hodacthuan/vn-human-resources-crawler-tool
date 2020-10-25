@@ -90,7 +90,7 @@ app.get('/api/status', async function (req, res, next) {
 
 app.post('/api/mywork/crawl', async function (req, res, next) {
 	try {
-		let urls = req.body.data;
+		let urls = req.body.urls;
 		if (!(urls) || !urls.length) {
 			res.send('Error: Urls not exist in body');
 		}
