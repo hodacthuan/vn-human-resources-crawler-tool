@@ -44,6 +44,11 @@ Exec to server:
 **API:** POST http://crawl.joco.asia:4000/api/mywork/crawl
 
 ```
+DESCRIPTION: Crawl and get mywork candidate details then save it to mongoDB
+- Check if candidate existing in mongoDB, then check if both 2 fields `candidatePhone` and `candidateEmail` is existing in DB.
+- If they are existing, return them
+- If not, crawl all its candidate details and save to DB, return them also
+
 ROUTE: api/mywork/crawl
 METHOD: POST
 BODY-RAW-DATA:
