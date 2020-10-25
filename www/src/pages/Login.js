@@ -43,7 +43,7 @@ export default function SignIn() {
 
     const history = useHistory();
     useEffect(() => {
-        if (Cookies.get(CONFIG.cookiePasswordCacheKey) == CONFIG.settingPassword) {
+        if (Cookies.get(CONFIG.cookiePasswordCacheKey) == CONFIG.loginPassword) {
             history.push(CONFIG.goToPage);
         }
     }, []);
@@ -99,7 +99,7 @@ export default function SignIn() {
                         color="primary"
                         className={classes.submit}
                         onClick={() => {
-                            if (email == 'admin' && password == CONFIG.settingPassword) {
+                            if (email == 'admin' && password == CONFIG.loginPassword) {
                                 Cookies.remove(CONFIG.cookiePasswordCacheKey);
                                 Cookies.set(CONFIG.cookiePasswordCacheKey, password, { expires: (CONFIG.credentialExpiredTime / (24 * 60)) });
                                 history.push(CONFIG.goToPage);

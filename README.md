@@ -21,6 +21,7 @@ Before deploying the project:
     MONGODB_URL=mongodb://localhost:27017
     MYWORK_USERNAME=username
     MYWORK_PASSWORD=password
+    REACT_APP_LOGIN_PASSWORD=password
     ```
 
 ## How to

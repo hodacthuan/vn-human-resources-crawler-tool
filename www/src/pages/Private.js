@@ -11,7 +11,7 @@ import { useHistory } from "react-router-dom";
 export default function Private() {
     const history = useHistory();
     useEffect(() => {
-        if (Cookies.get(CONFIG.cookiePasswordCacheKey) !== CONFIG.settingPassword) {
+        if (Cookies.get(CONFIG.cookiePasswordCacheKey) !== CONFIG.loginPassword) {
             history.push(CONFIG.goToLogin);
         }
     }, []);
@@ -19,7 +19,7 @@ export default function Private() {
     return (
         <>
             <Router>
-                {(Cookies.get(CONFIG.cookiePasswordCacheKey) == CONFIG.settingPassword) ?
+                {(Cookies.get(CONFIG.cookiePasswordCacheKey) == CONFIG.loginPassword) ?
                     (
                         <Route path="/app/main" component={Main} />
                     ) : null
