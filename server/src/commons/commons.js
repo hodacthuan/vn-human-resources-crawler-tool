@@ -6,6 +6,10 @@ const CONFIG = require('../../config/config');
 const puppeteer = require('puppeteer');
 const moment = require('moment');
 
+/**
+ * Init commons object
+ * 
+ */
 const commons = {
 	sleep: (ms) => {
 		return new Promise((resolve) => {
@@ -32,18 +36,19 @@ const commons = {
 	},
 };
 
-
+/**
+ * Remove duplicate in an array of object
+ * 
+ */
 commons.removeDuplicates = (arr) => {
 	const result = [];
 	const duplicatesIndices = [];
 
-	// Loop through each item in the original array
 	arr.forEach((current, index) => {
 		if (duplicatesIndices.includes(index)) return;
 
 		result.push(current);
 
-		// Loop through each other item on array after the current one
 		for (
 			let comparisonIndex = index + 1;
 			comparisonIndex < arr.length;
@@ -53,15 +58,12 @@ commons.removeDuplicates = (arr) => {
 			const currentKeys = Object.keys(current);
 			const comparisonKeys = Object.keys(comparison);
 
-			// Check number of keys in objects
 			if (currentKeys.length !== comparisonKeys.length) continue;
 
-			// Check key names
 			const currentKeysString = currentKeys.sort().join('').toLowerCase();
 			const comparisonKeysString = comparisonKeys.sort().join('').toLowerCase();
 			if (currentKeysString !== comparisonKeysString) continue;
 
-			// Check values
 			let valuesEqual = true;
 			for (let i = 0; i < currentKeys.length; i++) {
 				const key = currentKeys[i];
@@ -71,12 +73,17 @@ commons.removeDuplicates = (arr) => {
 				}
 			}
 			if (valuesEqual) duplicatesIndices.push(comparisonIndex);
-		} // end for loop
-	}); // end arr.forEach()
+		}
+	});
 
 	return result;
 };
 
+/**
+ * Update company document in MongoDB
+ * 
+ * @param {*} item company object data
+ */
 commons.updateCompany = async (item) => {
 	return new Promise(async (resolve, reject) => {
 		let getCompany = await CompanyModel.findOne({
@@ -95,7 +102,12 @@ commons.updateCompany = async (item) => {
 	});
 };
 
-
+/**
+ * Get candidate data from MongoDB from object.candidateIdFromSource
+ * 
+ * @param {*} item init candidate object
+ * @return {*} candidate data
+ */
 commons.getCandidate = async (item) => {
 	if (!item.candidateIdFromSource) {
 		return
@@ -117,7 +129,11 @@ commons.getCandidate = async (item) => {
 	}
 };
 
-
+/**
+ * Update candidate document in MongoDB
+ * 
+ * @param {*} item candidate object data
+ */
 commons.updateCandidate = async (item) => {
 	if (!item.candidateIdFromSource || !item.candidateUrl) {
 		return
@@ -171,12 +187,24 @@ commons.updateCandidate = async (item) => {
 
 };
 
-
+/**
+ * Return an array of number from a->b
+ * 
+ * @param {Number} a from number
+ * @param {Number} b to number
+ * @return {Array} the array of number from a to b
+ */
 commons.getArrayNumber = (a, b) => {
 	let c = b - a + 1;
 	return Array.from(Array(c), (_, i) => i + a);
 };
 
+/**
+ * Update job document in MongoDB
+ * 
+ * @param {*} company
+ * @param {*} item
+ */
 commons.updateJob = async (company, item) => {
 	return new Promise(async (resolve, reject) => {
 		let getJob = await JobModel.findOne({
@@ -197,20 +225,26 @@ commons.updateJob = async (company, item) => {
 	});
 };
 
+/**
+ * Clean up job collection
+ */
 commons.cleanUpJob = async () => {
-	let older_than = moment().subtract(CONFIG.REMOVEJOB_DAYS, 'days').toDate();
-	JobModel.find({ createdDate: { $lte: older_than } })
+	let olderThan = moment().subtract(CONFIG.REMOVEJOB_DAYS, 'days').toDate();
+	JobModel.find({ createdDate: { $lte: olderThan } })
 		.deleteMany()
 		.exec()
 		.then((RemoveStatus) => {
 			console.log('Documents Removed Successfully');
 		})
 		.catch((err) => {
-			console.error('something error when cleanup');
+			console.error('Something error when cleanup');
 			console.error(err);
 		});
 };
 
+/**
+ * Console client IP Address
+ */
 commons.showIP = () => {
 	let os = require('os');
 	let ifaces = os.networkInterfaces();
@@ -220,15 +254,12 @@ commons.showIP = () => {
 
 		ifaces[ifname].forEach(function (iface) {
 			if ('IPv4' !== iface.family || iface.internal !== false) {
-				// skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
 				return;
 			}
 
 			if (alias >= 1) {
-				// this single interface has multiple ipv4 addresses
 				console.log(ifname + ':' + alias, iface.address);
 			} else {
-				// this interface has only one ipv4 adress
 				console.log(ifname, iface.address);
 			}
 			++alias;
@@ -236,6 +267,12 @@ commons.showIP = () => {
 	});
 };
 
+/**
+ * Get configuration data from MongoDB
+ * 
+ * @param {String} jobName
+ * @return {*} data configuration
+ */
 commons.getConfig = async (jobName) => {
 	return new Promise(async (resolve, reject) => {
 		let config = await ConfigModel.findOne({
@@ -249,6 +286,12 @@ commons.getConfig = async (jobName) => {
 	});
 };
 
+/**
+ * Update configuration to MongoDB by jobName
+ * 
+ * @param {String} jobName
+ * @param {*} data configuration data
+ */
 commons.updateConfig = async (jobName, data) => {
 	return new Promise(async (resolve, reject) => {
 		let config = await ConfigModel.findOneAndUpdate({ id: jobName },
@@ -268,6 +311,9 @@ commons.updateConfig = async (jobName, data) => {
 	});
 };
 
+/**
+ * For file uploaded handling
+ */
 commons.fileExtend = (target) => {
 	let key, obj;
 	for (let i = 1, l = arguments.length; i < l; i++) {
