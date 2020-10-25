@@ -2,7 +2,7 @@ const CompanyModel = require('../models/company.model');
 const JobModel = require('../models/job.model');
 const CandidateModel = require('../models/candidate.model');
 const ConfigModel = require('../models/config.model');
-const CONFIG = require('../../config/config');
+const CONFIG = require('../../config');
 const puppeteer = require('puppeteer');
 const moment = require('moment');
 
@@ -110,7 +110,7 @@ commons.updateCompany = async (item) => {
  */
 commons.getCandidate = async (item) => {
 	if (!item.candidateIdFromSource) {
-		return
+		return;
 	}
 
 	try {
@@ -123,9 +123,9 @@ commons.getCandidate = async (item) => {
 			return getCandidate;
 		}
 
-		return
+		return;
 	} catch (error) {
-		commons.debug(error)
+		commons.debug(error);
 	}
 };
 
@@ -136,7 +136,7 @@ commons.getCandidate = async (item) => {
  */
 commons.updateCandidate = async (item) => {
 	if (!item.candidateIdFromSource || !item.candidateUrl) {
-		return
+		return;
 	}
 
 	try {
@@ -181,8 +181,8 @@ commons.updateCandidate = async (item) => {
 
 		return data;
 	} catch (error) {
-		commons.debug('Error because of duplication')
-		commons.debug(error)
+		commons.debug('Error because of duplication');
+		commons.debug(error);
 	}
 
 };
@@ -323,6 +323,6 @@ commons.fileExtend = (target) => {
 		}
 	}
 	return target;
-}
+};
 
 module.exports = commons;;

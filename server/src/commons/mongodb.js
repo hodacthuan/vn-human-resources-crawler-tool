@@ -1,5 +1,5 @@
 
-const CONFIG = require('../../config/config');
+const CONFIG = require('../../config');
 const mongoose = require('mongoose');
 
 mongoose.connect(CONFIG.MONGODB_URL, {
@@ -7,4 +7,4 @@ mongoose.connect(CONFIG.MONGODB_URL, {
     useCreateIndex: true,
     useFindAndModify: false,
     useUnifiedTopology: true
-})
+});

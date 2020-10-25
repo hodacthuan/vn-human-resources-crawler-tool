@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer');
 const mainUrl = 'https://www.vietnamworks.com/tim-viec-lam/tat-ca-viec-lam';
-const CONFIG = require('../../config/config');
+const CONFIG = require('../../config');
 const JobModel = require('../models/job.model');
 const commons = require('../commons/commons');
 
