@@ -1363,7 +1363,10 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
                         candidateUrl: url,
                         candidateIdFromSource: MyworkUtils.url2cvId(url)
                     };
+                    commons.debug(`initCandidate: ${JSON.stringify(initCandidate)}`);
+
                     let candidate = await commons.getCandidate(initCandidate);
+                    commons.debug(`getCandidate: ${JSON.stringify(candidate)}`);
 
                     if ((!candidate) || (candidate && (!(candidate.candidatePhone && candidate.candidateEmail)))) {
                         global.token = await MyworkUtils.myworkGetToken(token);
