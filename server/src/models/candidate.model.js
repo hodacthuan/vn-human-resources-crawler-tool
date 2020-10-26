@@ -10,7 +10,8 @@ const CandidateSchema = new Schema({
         type: String,
         unique: true,
         required: true,
-        default: null
+        default: null,
+        index: true
     },
     createdDate: {
         type: Date,
@@ -25,7 +26,8 @@ const CandidateSchema = new Schema({
         type: String,
         unique: true,
         required: true,
-        default: null
+        default: null,
+        index: true
     },
     candidateName: {
         type: String,
