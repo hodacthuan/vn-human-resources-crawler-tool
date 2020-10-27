@@ -2,21 +2,21 @@
 
 ## Table of content
 - [About](#About)
-    - [Introduction](#Introduction)
-    - [Built with](#Built-with)
-    - [Architecture](#Architecture)
-    - [File Structure](#File-Structure)
-- [Getting Started](#Getting-Started)
-    - [Prerequisites](#Prerequisites)
-    - [Installation](#Installation)
-    - [Useful scripts](#Useful-scripts)
-- [APIs Document](#APIs-Document)
-- [Usage](#Usage)
-- [Roadmap](#Roadmap)
-- [Contributing](#Contributing)
-- [License](#License)
-- [Contact](#Contact)
-- [Acknowledgements](#Acknowledgements)
+    - [Introduction](#introduction)
+    - [Built with](#built-with)
+    - [Architecture](#architecture)
+    - [File Structure](#file-Structure)
+- [Getting Started](#getting-Started)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+    - [Useful scripts](#useful-scripts)
+- [APIs Document](#apis-document)
+- [Usage](#usage)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+- [Acknowledgements](#acknowledgements)
 
 ## About
 ### Introduction
@@ -49,7 +49,62 @@ DevOps
 ### File Structure
 This diagram below only show some file and folder which is much more important
 
-
+```
+.
+|-- README.md
+|-- .gitignore
+|-- docker-compose.yml
+|-- down.sh
+|-- up.sh
+|-- exec.sh
+|-- install-tools.sh
+|-- server
+|   |-- config/index.js
+|   |-- data
+|   |-- src
+|   |   |-- commons
+|   |   |   |-- commons.js
+|   |   |   `-- mongodb.js
+|   |   |-- crons
+|   |   |   |-- careerbuilder.cron.js
+|   |   |   |-- jobsgo.job.cron.js
+|   |   |   |-- mywork.candidate.cron.js
+|   |   |   |-- vietnamworks.cron.jsperiodicallyJobs.js
+|   |   |   |-- periodicallyJobs.js
+|   |   |   `-- index.js
+|   |   |-- middlewares
+|   |   |   `-- cors.js
+|   |   |-- models
+|   |   |   |-- candidate.model.js
+|   |   |   |-- company.model.js
+|   |   |   |-- config.model.js
+|   |   |   |-- contact.model.js
+|   |   |   `-- job.model.js
+|   |   |-- routes
+|   |   |   `-- index.js
+|   |   |-- utils
+|   |   |   `-- mywork.util.js
+|   |-- app.js
+|   `-- package.json
+`-- www
+    |-- public
+    |-- src
+    |   |-- components
+    |   |   `-- Table.js
+    |   |-- configs
+    |   |   |-- index.js
+    |   |   |-- local.js
+    |   |   `-- prod.js
+    |   |-- pages
+    |   |   |-- App.css
+    |   |   |-- Login.js
+    |   |   |-- Private.js
+    |   |   `-- Main.js
+    |   |-- App.js
+    |   |-- index.css
+    |   `-- index.js
+    `-- package.json
+```
 
 ## Getting Started
 ### Prerequisite
