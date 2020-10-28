@@ -376,7 +376,7 @@ export default function Table({
           textAlign: 'center',
         }}
       >
-        JOCO CRAWL DATA TOOLS POTAL
+        VN HUMAN RESOURCE DATA TOOLS
       </h2>
 
       {
