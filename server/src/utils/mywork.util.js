@@ -1424,14 +1424,14 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
                     commons.debug(`Crawl contact info of candidate ${initCandidate.candidateIdFromSource}`);
                     crawlCandidate = await MyworkUtils.myworkEachCandidateDetail(globalPage, initCandidate, token);
 
-                    if (!crawlCandidate && count == 2) {
-                        let candidateAvailable = await MyworkUtils.checkCandidateAvailableToScrape(globalPage, url);
-                        if (!candidateAvailable) {
-                            return;
-                        }
-                    }
-
                     if (!crawlCandidate) {
+                        if (count == 2) {
+                            let candidateAvailable = await MyworkUtils.checkCandidateAvailableToScrape(globalPage, url);
+                            if (!candidateAvailable) {
+                                return;
+                            }
+                        }
+
                         await globalBrowser.close();
                         global.globalBrowser = await puppeteer.launch({ args: ['--no-sandbox'] });
                         global.globalPage = await globalBrowser.newPage();
