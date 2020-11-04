@@ -27,11 +27,11 @@ services:
         aliases:
           - www
 
-  server:
+  backend:
     restart: always
     stdin_open: true
     image: ${DOCKER_REGISTRY}/node:1.0
-    container_name: ${SERVICE_NAME}-server
+    container_name: ${SERVICE_NAME}-backend
     command: bash -c "${SERVER_COMMAND}"
     volumes:
       - ${DEPLOY_DIR}/server:/app
@@ -45,6 +45,31 @@ services:
       - 4000:4000
     expose:
       - 4000
+    logging:
+      options:
+        max-size: 2m
+    networks:
+      network:
+        aliases:
+          - backend
+
+
+  server:
+    restart: always
+    stdin_open: true
+    image: ${DOCKER_REGISTRY}/node:1.0
+    container_name: ${SERVICE_NAME}-server
+    command: bash -c "${SERVER_COMMAND}"
+    volumes:
+      - ${DEPLOY_DIR}/server:/app
+
+    environment:
+      - SERVICE_NAME=${SERVICE_NAME}
+      - DEPLOY_ENV=${DEPLOY_ENV}
+      - CRON_SERVER=true
+    env_file:
+      - .env
+  
     logging:
       options:
         max-size: 2m

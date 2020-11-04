@@ -4,4 +4,6 @@ const careerbuilder = require('./careerbuilder.cron');
 const myworkcandidate = require('./mywork.candidate.cron');
 const jobsgoJob = require('./jobsgo.job.cron.js');
 
-myworkcandidate.crawlJob();
+if (process.env.CRON_SERVER == 'true') {
+    myworkcandidate.crawlJob();
+}

@@ -4,7 +4,7 @@ cd ${CWD}
 
 export DEPLOY_ENV=${1}
 
-ENVS=(server www)
+ENVS=(server www backend)
 if [[ ! " ${ENVS[@]} " =~ " ${DEPLOY_ENV} " ]]; then
     echo "Only accept ENV: ${ENVS[@]}"
     exit 0
