@@ -239,11 +239,24 @@ MyworkUtils.myworkEachCandidateDetail = async (page, item, token = undefined) =>
         }
 
         await page.goto(item.candidateUrl);
-        await page.waitForSelector('#box-contact', { visible: true, timeout: 5000 });
+        await page.waitForSelector('.logo', { visible: true, timeout: 5000 });
 
         //code at fontend
         let data = await page.evaluate(() => {
             let _data = {};
+
+            try {
+                let parentElement = document.getElementsByClassName('candidate-hidden')[0];
+                let elementData = parentElement
+                    .getElementsByClassName('desc')[0]
+                    .innerText.trim();
+
+                if (elementData == 'Bạn không thể xem hồ sơ của ứng viên này do ứng viên đang để ở chế độ ẩn.') {
+                    return false;
+                }
+            } catch (error) {
+                console.log(error);
+            }
 
             try {
 
@@ -825,8 +838,11 @@ MyworkUtils.myworkEachCandidateDetail = async (page, item, token = undefined) =>
             return _data;
         });
 
+        if (data == false) {
+            return false;
+        }
         if (data.error) {
-            return;
+            return undefined;
         }
 
         if (!token) {
@@ -1425,11 +1441,8 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
                     crawlCandidate = await MyworkUtils.myworkEachCandidateDetail(globalPage, initCandidate, token);
 
                     if (!crawlCandidate) {
-                        if (count == 2) {
-                            let candidateAvailable = await MyworkUtils.checkCandidateAvailableToScrape(globalPage, url);
-                            if (!candidateAvailable) {
-                                return;
-                            }
+                        if (crawlCandidate == false) {
+                            return;
                         }
 
                         await globalBrowser.close();
