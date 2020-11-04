@@ -199,12 +199,12 @@ MyworkUtils.checkCandidateAvailableToScrape = async (page, url) => {
 
 
         });
-        console.log('result', result);
+        commons.debug(`Candidate available to crawl: ${result}`);
 
         return result;
     } catch (err) {
-        console.log('ERROR :: checkCandidateAvailableToScrapeFailed', err);
-        return false;
+        commons.logger(`ERROR :: checkCandidateAvailableToScrapeFailed ${err}`);
+        return true;
     }
 };
 
@@ -1401,58 +1401,55 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
     let results = [];
 
     await urls.reduce(function (promise, url) {
-        return promise.then(function () {
-            return new Promise((resolve, reject) => {
-                process.nextTick(async () => {
-                    let initCandidate = {
-                        source: source,
-                        candidateUrl: url,
-                        candidateIdFromSource: MyworkUtils.url2cvId(url)
-                    };
-                    commons.debug(`initCandidate: ${JSON.stringify(initCandidate)}`);
+        return promise.then(async function () {
 
-                    let candidate = await commons.getCandidate(initCandidate);
-                    commons.debug(`getCandidate: ${JSON.stringify(candidate)}`);
+            let initCandidate = {
+                source: source,
+                candidateUrl: url,
+                candidateIdFromSource: MyworkUtils.url2cvId(url)
+            };
+            commons.debug(`initCandidate: ${JSON.stringify(initCandidate)}`);
 
-                    if ((!candidate) || (candidate && (!(candidate.candidatePhone && candidate.candidateEmail)))) {
+            let candidate = await commons.getCandidate(initCandidate);
+            commons.debug(`getCandidate: ${JSON.stringify(candidate)}`);
 
-                        // Check if candidate url available
+            if ((!candidate) || (candidate && (!(candidate.candidatePhone && candidate.candidateEmail)))) {
+                global.token = await MyworkUtils.myworkGetToken(token);
+                commons.debug(token);
+
+                let crawlCandidate;
+                let count = 1;
+                while ((!crawlCandidate) && (count < 5)) {
+                    count++;
+                    commons.debug(`Crawl contact info of candidate ${initCandidate.candidateIdFromSource}`);
+                    crawlCandidate = await MyworkUtils.myworkEachCandidateDetail(globalPage, initCandidate, token);
+
+                    if (!crawlCandidate && count == 2) {
                         let candidateAvailable = await MyworkUtils.checkCandidateAvailableToScrape(globalPage, url);
                         if (!candidateAvailable) {
-                            resolve();
-                        }
-
-                        global.token = await MyworkUtils.myworkGetToken(token);
-                        commons.debug(token);
-
-                        let crawlCandidate;
-                        let count = 1;
-                        while ((!crawlCandidate) && (count < 5)) {
-                            count++;
-                            commons.debug(`Crawl contact info of candidate ${initCandidate.candidateIdFromSource}`);
-                            crawlCandidate = await MyworkUtils.myworkEachCandidateDetail(globalPage, initCandidate, token);
-
-                            if (!crawlCandidate) {
-                                await globalBrowser.close();
-                                global.globalBrowser = await puppeteer.launch({ args: ['--no-sandbox'] });
-                                global.globalPage = await globalBrowser.newPage();
-                            }
-                        }
-                        commons.debug(crawlCandidate);
-
-                        if (crawlCandidate) {
-                            candidate = await commons.updateCandidate(crawlCandidate);
+                            return;
                         }
                     }
-                    if (candidate && candidate.candidatePhone && candidate.candidateEmail) {
-                        results.push(candidate);
+
+                    if (!crawlCandidate) {
+                        await globalBrowser.close();
+                        global.globalBrowser = await puppeteer.launch({ args: ['--no-sandbox'] });
+                        global.globalPage = await globalBrowser.newPage();
                     }
+                }
+                commons.debug(crawlCandidate);
 
-                    await commons.sleep(Math.floor(Math.random() * 100) + 100);
+                if (crawlCandidate) {
+                    candidate = await commons.updateCandidate(crawlCandidate);
+                }
+            }
+            if (candidate && candidate.candidatePhone && candidate.candidateEmail) {
+                results.push(candidate);
+            }
 
-                    resolve();
-                });
-            });
+            await commons.sleep(Math.floor(Math.random() * 100) + 100);
+
+            return;
         });
     }, Promise.resolve());
 
