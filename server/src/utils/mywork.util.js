@@ -163,6 +163,52 @@ MyworkUtils.myworkCrawlListofCandidate = async (page, url) => {
 };
 
 /**
+ * Check if Candidate Available To Scrape
+ * @param {*} page
+ * @param {*} url
+ * @return {*} Candidate data
+ */
+MyworkUtils.checkCandidateAvailableToScrape = async (page, url) => {
+    try {
+        await page.goto(url);
+        await page.waitForSelector('.text-warning', { visible: true, timeout: 5000 });
+
+        //code at fontend
+        let result = await page.evaluate(() => {
+            let _data = {};
+
+            try {
+                let parentElement = document.getElementsByClassName('candidate-hidden')[0];
+                let elementData = parentElement
+                    .getElementsByClassName('desc')[0]
+                    .innerText.trim();
+                console.log(elementData);
+
+                _data = elementData;
+
+            } catch (error) {
+                console.log(error);
+            }
+
+            console.log(_data);
+            if (_data == 'Bạn không thể xem hồ sơ của ứng viên này do ứng viên đang để ở chế độ ẩn.') {
+                return false;
+            } else {
+                return true;
+            }
+
+
+        });
+        console.log('result', result);
+
+        return result;
+    } catch (err) {
+        console.log('ERROR :: checkCandidateAvailableToScrapeFailed', err);
+        return false;
+    }
+};
+
+/**
  * Crawl each candidates details info
  * @param {*} page
  * @param {*} candidate init data
@@ -1369,6 +1415,13 @@ MyworkUtils.myworkCrawlDataByUrls = async (urls) => {
                     commons.debug(`getCandidate: ${JSON.stringify(candidate)}`);
 
                     if ((!candidate) || (candidate && (!(candidate.candidatePhone && candidate.candidateEmail)))) {
+
+                        // Check if candidate url available
+                        let candidateAvailable = await MyworkUtils.checkCandidateAvailableToScrape(globalPage, url);
+                        if (!candidateAvailable) {
+                            resolve();
+                        }
+
                         global.token = await MyworkUtils.myworkGetToken(token);
                         commons.debug(token);
 
