@@ -5,9 +5,20 @@ const MyworkUtils = require('../utils/mywork.util');
 const formidable = require('formidable');
 
 /**
+ * Return server status
+ */
+router.get('/status', async function (req, res, next) {
+
+    res.send({
+        statusCode: 200,
+        message: 'Server up and running!'
+    });
+});
+
+/**
  * Return custom Mywork candidate list
  */
-router.get('/list', async (req, res) => {
+router.get('/mywork/list', async (req, res) => {
     let candidateList = await MyworkUtils.getMarketingCandidateList();
 
     res.send(candidateList);
@@ -16,7 +27,7 @@ router.get('/list', async (req, res) => {
 /**
  * Update mywork candidate info from frontend
  */
-router.post('/update', async (req, res) => {
+router.post('/mywork/update', async (req, res) => {
     try {
         await MyworkUtils.updateMyworkImportCandidateInfo(req.body, 'MyworkSaveStatus');
 
@@ -41,7 +52,7 @@ function fileExtend(target) {
 /**
  * Upload file crawled from mywork then handle it and save to DB
  */
-router.post('/upload', async function (req, res, next) {
+router.post('/mywork/upload', async function (req, res, next) {
     let form = new formidable.IncomingForm();
     form.parse(req, async function (err, fields, files) {
         if (err) {
@@ -64,7 +75,7 @@ router.post('/upload', async function (req, res, next) {
 /**
  * Return crawl status
  */
-router.get('/status', async function (req, res, next) {
+router.get('/mywork/status', async function (req, res, next) {
     let message = {
         MyworkSaveStatus: await commons.getConfig('MyworkSaveStatus'),
         MyworkImportStatus: await commons.getConfig('MyworkImportStatus')

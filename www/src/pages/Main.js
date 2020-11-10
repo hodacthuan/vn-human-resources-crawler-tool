@@ -193,7 +193,7 @@ function Main() {
                 bodyFormData.append(`file${x}`, files[x]);
             }
 
-            axios.post(`${CONFIG.serverUrl}/api/upload`, bodyFormData, {
+            axios.post(`${CONFIG.serverUrl}/api/mywork/upload`, bodyFormData, {
                 onUploadProgress: ProgressEvent => {
                     setLoaded(ProgressEvent.loaded / ProgressEvent.total * 100);
                 },
@@ -210,11 +210,11 @@ function Main() {
     const handleSave = async () => {
         setSaveButtonDisable(true);
         setDialogState(false);
-        console.log(`${CONFIG.serverUrl}/api/update`);
+        console.log(`${CONFIG.serverUrl}/api/mywork/update`);
         console.log(updateData);
         const result = await axios({
             method: 'post',
-            url: `${CONFIG.serverUrl}/api/update`,
+            url: `${CONFIG.serverUrl}/api/mywork/update`,
             headers: {},
             data: updateData
         });
@@ -234,7 +234,7 @@ function Main() {
         (async () => {
             console.log('FETCH DATA...');
             setLoading(true);
-            const result = await axios(`${CONFIG.serverUrl}/api/list`);
+            const result = await axios(`${CONFIG.serverUrl}/api/mywork/list`);
             if (result.status == 200) {
                 setLoading(false);
 
@@ -313,7 +313,7 @@ function Main() {
 
     const updateStatus = () => {
         setInterval((async () => {
-            let response = await axios.get(`${CONFIG.serverUrl}/api/status`);
+            let response = await axios.get(`${CONFIG.serverUrl}/api/mywork/status`);
             let data = response.data;
             if (data) {
                 let now = new Date();
