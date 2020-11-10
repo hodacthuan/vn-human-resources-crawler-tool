@@ -26,6 +26,6 @@ else
 fi
 
 docker-compose -f docker-compose.yml down
-docker-compose -f docker-compose.yml up -d
+docker-compose -f docker-compose.yml up -d backend
 
 exit 0
