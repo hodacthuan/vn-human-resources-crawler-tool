@@ -155,7 +155,7 @@ Database: We need a MongoDB for storing the data which is crawled.
 
 ## APIs Document
 
-### API: http://crawl.joco.asia:4000/api/mywork/crawl  
+### API: http://localhost:4000/api/mywork/crawl  
 
 DESCRIPTION: Crawl and get mywork candidate details then save it to mongoDB
 - Check if candidate existing in mongoDB, then check if both 2 fields `candidatePhone` and `candidateEmail` is existing in DB.
